@@ -1,1337 +1,1019 @@
 <!DOCTYPE html>
-<html lang="pt-BR" x-data="clinicApp()" :class="{ 'dark': isDark }" :style="`font-size: ${fontScale}rem`" class="scroll-smooth">
+<html lang="pt-BR" x-data="app()" :class="{'dark':dark}" :style="`font-size:${fs}rem`" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evoluir — Clínica Multidisciplinar · Teresópolis</title>
-    <meta name="description" content="Clínica Multidisciplinar Evoluir. Fisioterapia, Psicologia, Fonoaudiologia, Pilates e muito mais em Teresópolis, RJ.">
-    <meta name="theme-color" content="#5a8a96">
-    <link rel="icon" href="./assets/logo-evoluir.jpg" type="image/jpeg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evoluir — Clínica Multidisciplinar · Teresópolis</title>
+<meta name="description" content="Clínica Multidisciplinar Evoluir. Fisioterapia, Psicologia, Fonoaudiologia, Pilates e muito mais em Teresópolis, RJ.">
+<link rel="icon" href="assets/logo.ico?v=2" type="image/x-icon">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/css/style.css">
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['"Playfair Display"', 'serif'],
-                    },
-                    colors: {
-                        sage:  { 50:'#f2f7f8', 100:'#e0edf0', 200:'#c2dae0', 300:'#96bfc9', 400:'#6a9fad', 500:'#5a8a96', 600:'#4a717c', 700:'#3d5d67', 800:'#344e57', 900:'#2e4249' },
-                        blush: { 50:'#fef7f4', 100:'#fdeae2', 200:'#fbd5c5', 300:'#f7b59d', 400:'#f28f6d', 500:'#ec6f45', 600:'#d95530', 700:'#b64326', 800:'#944025' },
-                        cream: { DEFAULT:'#faf8f5', dark:'#f0ede8' },
-                    },
-                }
-            }
-        }
-    </script>
+<script src="src/js/tailwind.js"></script>
 
-    <style>
-        [x-cloak] { display: none !important; }
-
-        /* ——— Scrollbar ——— */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #5a8a96; border-radius: 3px; }
-
-        /* ——— Base ——— */
-        body { background-color: #faf8f5; }
-        .dark body, .dark { background-color: #0d1517 !important; }
-
-        /* ——— Glass ——— */
-        .glass {
-            background: rgba(250,248,245,0.88);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-        .dark .glass {
-            background: rgba(13,21,23,0.88);
-        }
-
-        /* ——— Reveals ——— */
-        .reveal { opacity:0; transform:translateY(28px); transition: opacity .7s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.4,0,.2,1); }
-        .reveal.active { opacity:1; transform:translateY(0); }
-        .reveal-l { opacity:0; transform:translateX(-28px); transition: opacity .7s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.4,0,.2,1); }
-        .reveal-l.active { opacity:1; transform:translateX(0); }
-        .reveal-r { opacity:0; transform:translateX(28px); transition: opacity .7s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.4,0,.2,1); }
-        .reveal-r.active { opacity:1; transform:translateX(0); }
-
-        /* ——— Skeleton ——— */
-        .skeleton { background: linear-gradient(90deg,#e9e5df 25%,#d8d2cb 50%,#e9e5df 75%); background-size:200% 100%; animation:sk 1.4s infinite; }
-        .dark .skeleton { background: linear-gradient(90deg,#1e2d31 25%,#243438 50%,#1e2d31 75%); background-size:200% 100%; }
-        @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* ——— Float ——— */
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-        .float { animation: float 6s ease-in-out infinite; }
-        .float-delay { animation: float 6s ease-in-out 1.5s infinite; }
-
-        /* ——— Pulse dot ——— */
-        @keyframes pdot { 0%,100%{transform:scale(1);opacity:.8} 50%{transform:scale(1.3);opacity:.4} }
-        .pdot { animation: pdot 2s ease-in-out infinite; }
-
-        /* ——— Hero line ——— */
-        .hero-line {
-            display:inline;
-            background-image: linear-gradient(120deg, #fbd5c5 0%, #fbd5c5 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 0.18em;
-            background-position: 0 88%;
-            padding-bottom:2px;
-        }
-
-        /* ——— Service cards ——— */
-        .srv-card { transition: transform .3s ease, box-shadow .3s ease; }
-        .srv-card:hover { transform:translateY(-6px); box-shadow:0 20px 40px -10px rgba(90,138,150,.18); }
-
-        /* ——— Wavy divider ——— */
-        .wave-top { position:absolute; top:-1px; left:0; width:100%; overflow:hidden; line-height:0; }
-        .wave-top svg { display:block; width:calc(100% + 1.3px); height:60px; }
-        .wave-bot { position:absolute; bottom:-1px; left:0; width:100%; overflow:hidden; line-height:0; transform:rotate(180deg); }
-        .wave-bot svg { display:block; width:calc(100% + 1.3px); height:60px; }
-
-        /* ——— Gradient text ——— */
-        .grad-text {
-            background: linear-gradient(135deg, #5a8a96 0%, #f28f6d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* ——— Modal ——— */
-        .modal-bg { background:rgba(0,0,0,.55); backdrop-filter:blur(4px); }
-
-        /* ——— Tabs underline ——— */
-        .tab-active { border-bottom:3px solid #5a8a96; color: #5a8a96; font-weight:700; }
-
-        /* ——— Custom input ——— */
-        .inp {
-            width:100%; padding:.75rem 1rem;
-            border:1.5px solid #d1d5db;
-            border-radius:.75rem;
-            background:#fff;
-            outline:none;
-            transition:border-color .2s;
-            font-size:.95rem;
-        }
-        .dark .inp { background:#1a2b2f; border-color:#2d4a50; color:#e2e8f0; }
-        .inp:focus { border-color:#5a8a96; box-shadow:0 0 0 3px rgba(90,138,150,.15); }
-
-        /* ——— Specialty descriptions ——— */
-        .srv-desc { display:none; }
-        .srv-card:hover .srv-desc { display:block; }
-
-        /* ——— dark overrides ——— */
-        .dark .bg-cream { background-color: #0d1517; }
-        .dark .text-slate-700 { color: #cbd5e1; }
-        .dark .text-slate-600 { color: #94a3b8; }
-        .dark .border-slate-100 { border-color: #1e3038; }
-        .dark .bg-white { background-color: #111f23 !important; }
-
-        /* ——— Lightbox ——— */
-        #lightbox { transition: opacity .25s ease; }
-    </style>
 </head>
 
-<body class="text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<body>
 
-<!-- ═══════════════════════════════════════════════════════════
-     SKELETON LOADING
-════════════════════════════════════════════════════════════════ -->
-<div x-show="isLoading" class="fixed inset-0 z-[300] flex flex-col items-center justify-center bg-cream dark:bg-[#0d1517]" x-transition:leave="transition duration-700" x-transition:leave-end="opacity-0">
-    <div class="w-20 h-20 skeleton rounded-full mb-6"></div>
-    <div class="w-56 h-6 skeleton rounded-lg mb-3"></div>
-    <div class="w-40 h-4 skeleton rounded-md mb-10"></div>
-    <div class="flex gap-4">
-        <div class="w-28 h-24 skeleton rounded-2xl"></div>
-        <div class="w-28 h-24 skeleton rounded-2xl"></div>
-        <div class="w-28 h-24 skeleton rounded-2xl"></div>
-    </div>
+<!-- Cursor custom -->
+<div id="cur" class="hidden lg:block"></div>
+
+<!-- ══════════════════════════════════════════
+     SKELETON
+══════════════════════════════════════════ -->
+<div x-show="loading" class="fixed inset-0 z-[400] flex flex-col items-center justify-center bg-paper dark:bg-ink"
+     x-transition:leave="transition duration-600" x-transition:leave-end="opacity-0 scale-105">
+  <div class="sk w-20 h-20 rounded-full mb-6"></div>
+  <div class="sk w-48 h-5 rounded-lg mb-3"></div>
+  <div class="sk w-32 h-3 rounded-md mb-10"></div>
+  <div class="flex gap-3">
+    <div class="sk w-32 h-20 rounded-2xl"></div>
+    <div class="sk w-32 h-20 rounded-2xl"></div>
+    <div class="sk w-32 h-20 rounded-2xl"></div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      TOASTS
-════════════════════════════════════════════════════════════════ -->
-<div class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2">
-    <template x-for="t in toasts" :key="t.id">
-        <div x-show="true" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition duration-200" x-transition:leave-end="opacity-0"
-             class="flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl text-white text-sm font-medium min-w-[220px]"
-             :class="{'bg-sage-600':t.type==='success','bg-red-500':t.type==='error','bg-slate-700':t.type==='info'}">
-            <i class="fa-solid" :class="{'fa-check-circle':t.type==='success','fa-circle-exclamation':t.type==='error','fa-info-circle':t.type==='info'}"></i>
-            <span x-text="t.msg"></span>
-        </div>
-    </template>
+══════════════════════════════════════════ -->
+<div class="fixed bottom-24 md:bottom-6 right-5 z-[300] flex flex-col gap-2">
+  <template x-for="t in toasts" :key="t.id">
+    <div x-show="true"
+         x-transition:enter="transition ease-out duration-250"
+         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition duration-200"
+         x-transition:leave-end="opacity-0 translate-y-2"
+         class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl text-white text-sm font-medium min-w-[200px]"
+         :class="{'bg-teal-600':t.type==='ok','bg-red-500':t.type==='err','bg-ink dark:bg-teal-900':t.type==='info'}">
+      <i class="fa-solid text-xs" :class="{'fa-check':t.type==='ok','fa-triangle-exclamation':t.type==='err','fa-circle-info':t.type==='info'}"></i>
+      <span x-text="t.msg"></span>
+    </div>
+  </template>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
+
+<!-- ══════════════════════════════════════════
      SITE PÚBLICO
-════════════════════════════════════════════════════════════════ -->
-<div x-show="view==='public'" x-cloak>
+══════════════════════════════════════════ -->
+<div x-show="view==='pub'" x-cloak>
 
-    <!-- ——— NAVBAR ——— -->
-    <header class="fixed w-full top-0 z-50 transition-all duration-300"
-            :class="scrolled ? 'glass shadow-sm border-b border-sage-200/60 dark:border-sage-800/40 py-2' : 'py-4'">
-        <div class="max-w-7xl mx-auto px-5 lg:px-10 flex justify-between items-center">
+  <!-- ── NAVBAR ── -->
+  <header class="fixed w-full top-0 z-50 transition-all duration-400"
+          :class="scrolled?'glass shadow-sm py-3':'py-5 bg-transparent'">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
 
-            <!-- Logo -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="w-11 h-11 rounded-full overflow-hidden border-2 border-sage-300 shadow group-hover:scale-105 transition-transform">
-                    <img :src="cfg.logo" alt="Evoluir" class="w-full h-full object-cover">
-                </div>
-                <div>
-                    <span class="font-display font-bold text-xl text-sage-700 dark:text-sage-300 leading-none block">evoluir</span>
-                    <span class="text-[.55rem] uppercase tracking-[.15em] text-sage-500 dark:text-sage-400">Clínica Multidisciplinar</span>
-                </div>
-            </a>
-
-            <!-- Nav desktop -->
-            <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-400">
-                <a href="#sobre" class="hover:text-sage-600 transition-colors">Sobre</a>
-                <a href="#especialidades" class="hover:text-sage-600 transition-colors">Especialidades</a>
-                <a href="#equipe" class="hover:text-sage-600 transition-colors">Equipe</a>
-                <a href="#estrutura" class="hover:text-sage-600 transition-colors">Estrutura</a>
-                <a href="#contato" class="hover:text-sage-600 transition-colors">Contato</a>
-            </nav>
-
-            <!-- Tools + CTA -->
-            <div class="flex items-center gap-2">
-                <div class="flex bg-sage-100/80 dark:bg-sage-900/40 rounded-full p-1 gap-1">
-                    <button @click="cycleFont()" class="w-8 h-8 rounded-full text-sage-600 dark:text-sage-400 hover:bg-white dark:hover:bg-sage-800 transition-all text-sm" title="Tamanho da fonte">
-                        <i class="fa-solid fa-font"></i>
-                    </button>
-                    <button @click="toggleDark()" class="w-8 h-8 rounded-full text-sage-600 dark:text-sage-400 hover:bg-white dark:hover:bg-sage-800 transition-all text-sm" title="Modo escuro">
-                        <i class="fa-solid" :class="isDark?'fa-sun':'fa-moon'"></i>
-                    </button>
-                </div>
-                <button @click="openModal('login')" class="w-9 h-9 rounded-full text-slate-400 hover:text-sage-600 hover:bg-sage-100 dark:hover:bg-sage-900 transition-all flex items-center justify-center" title="Admin">
-                    <i class="fa-solid fa-lock text-xs"></i>
-                </button>
-                <button @click="openModal('schedule')" class="hidden sm:flex items-center gap-2 bg-sage-600 hover:bg-sage-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">
-                    Agendar <i class="fa-brands fa-whatsapp"></i>
-                </button>
-            </div>
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-300/50 shadow-sm group-hover:scale-105 transition-transform">
+          <img :src="cfg.logo" alt="Evoluir" class="w-full h-full object-cover">
         </div>
-    </header>
-
-    <!-- ——— HERO ——— -->
-    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden bg-cream dark:bg-[#0d1517]">
-
-        <!-- Blobs -->
-        <div class="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] rounded-full bg-blush-200/40 dark:bg-blush-900/15 blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-[-15%] left-[-8%] w-[35rem] h-[35rem] rounded-full bg-sage-200/50 dark:bg-sage-900/20 blur-3xl pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-5 lg:px-10 grid lg:grid-cols-2 gap-16 items-center relative z-10 py-20">
-
-            <!-- Copy -->
-            <div>
-                <!-- Pill badge -->
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 dark:bg-sage-900/50 border border-sage-200 dark:border-sage-700 shadow-sm mb-8 text-sm font-semibold text-sage-700 dark:text-sage-300">
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                    </span>
-                    Atendendo em Teresópolis · RJ
-                </div>
-
-                <h1 class="font-display text-5xl lg:text-[4.5rem] leading-[1.08] font-bold text-slate-900 dark:text-white mb-6">
-                    Cuidar de você<br>
-                    é nossa forma de<br>
-                    <span class="grad-text">evoluir juntos.</span>
-                </h1>
-
-                <p class="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed max-w-md">
-                    Uma clínica multidisciplinar com atendimento humanizado. Da infância à melhor idade — cuidamos do físico, mental e emocional.
-                </p>
-
-                <!-- Stats rápidas -->
-                <div class="flex flex-wrap gap-8 mb-10">
-                    <div>
-                        <p class="text-3xl font-display font-bold text-sage-600 dark:text-sage-400">+500</p>
-                        <p class="text-xs text-slate-500 mt-0.5">Pacientes atendidos</p>
-                    </div>
-                    <div>
-                        <p class="text-3xl font-display font-bold text-sage-600 dark:text-sage-400" x-text="db.services.length + '+'"></p>
-                        <p class="text-xs text-slate-500 mt-0.5">Especialidades</p>
-                    </div>
-                    <div>
-                        <p class="text-3xl font-display font-bold text-sage-600 dark:text-sage-400" x-text="db.professionals.length + '+'"></p>
-                        <p class="text-xs text-slate-500 mt-0.5">Profissionais</p>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap gap-4">
-                    <button @click="openModal('schedule')" class="bg-sage-600 hover:bg-sage-700 text-white px-8 py-4 rounded-full font-semibold text-base shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 flex items-center gap-3">
-                        Agendar pelo WhatsApp <i class="fa-brands fa-whatsapp text-lg"></i>
-                    </button>
-                    <a href="#sobre" class="px-8 py-4 rounded-full font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-sage-500 hover:text-sage-600 transition-colors flex items-center gap-2">
-                        Conhecer mais
-                    </a>
-                </div>
-            </div>
-
-            <!-- Visual stack -->
-            <div class="relative hidden lg:flex items-center justify-center h-[560px]">
-
-                <!-- Main photo -->
-                <div class="absolute right-0 top-8 w-[78%] h-[480px] rounded-[2.5rem] overflow-hidden shadow-2xl float border-4 border-white dark:border-sage-900">
-                    <img src="./assets/recepcao.jpg" alt="Recepção Evoluir" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-sage-800/50 via-transparent to-transparent"></div>
-                </div>
-
-                <!-- Small photo -->
-                <div class="absolute left-0 top-24 w-[46%] h-[260px] rounded-[1.5rem] overflow-hidden shadow-xl float-delay border-4 border-white dark:border-sage-900 z-20">
-                    <img src="./assets/infantil.jpg" alt="Atendimento Infantil" class="w-full h-full object-cover">
-                </div>
-
-                <!-- Floating card: horários -->
-                <div class="absolute left-4 bottom-10 bg-white dark:bg-sage-900 rounded-2xl shadow-2xl px-5 py-4 z-30 border border-sage-100 dark:border-sage-700 float" style="animation-delay:.8s">
-                    <p class="text-xs font-semibold text-sage-500 uppercase tracking-wider mb-1">Horário</p>
-                    <p class="text-sm font-bold text-slate-900 dark:text-white" x-text="cfg.hours"></p>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="w-2 h-2 rounded-full bg-green-400 pdot"></span>
-                        <span class="text-xs text-green-600 font-medium">Atendendo agora</span>
-                    </div>
-                </div>
-
-                <!-- Floating card: avaliação -->
-                <div class="absolute right-4 bottom-16 bg-white dark:bg-sage-900 rounded-2xl shadow-2xl px-5 py-4 z-30 border border-sage-100 dark:border-sage-700 float-delay">
-                    <div class="flex gap-0.5 mb-1">
-                        <i class="fa-solid fa-star text-amber-400 text-sm"></i><i class="fa-solid fa-star text-amber-400 text-sm"></i><i class="fa-solid fa-star text-amber-400 text-sm"></i><i class="fa-solid fa-star text-amber-400 text-sm"></i><i class="fa-solid fa-star text-amber-400 text-sm"></i>
-                    </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">"Atendimento incrível!"</p>
-                    <p class="text-[.65rem] text-slate-400 mt-0.5">— Google Reviews</p>
-                </div>
-            </div>
+        <div class="flex flex-col leading-none">
+          <span class="font-display text-xl font-light italic text-teal-600 dark:text-teal-400">evoluir</span>
+          <span class="text-[.52rem] uppercase tracking-[.18em] text-ink/40 dark:text-white/40 mt-0.5">Clínica Multidisciplinar</span>
         </div>
+      </a>
 
-        <!-- Scroll cue -->
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-400">
-            <span class="text-xs tracking-widest uppercase">Role para baixo</span>
-            <i class="fa-solid fa-chevron-down text-sage-500 animate-bounce"></i>
+      <!-- Nav desktop -->
+      <nav class="hidden md:flex items-center gap-8 text-sm text-ink/60 dark:text-white/60">
+        <a href="#sobre" class="hover:text-teal-600 transition-colors">Sobre</a>
+        <a href="#especialidades" class="hover:text-teal-600 transition-colors">Especialidades</a>
+        <a href="#equipe" class="hover:text-teal-600 transition-colors">Equipe</a>
+        <a href="#estrutura" class="hover:text-teal-600 transition-colors">Estrutura</a>
+        <a href="#contato" class="hover:text-teal-600 transition-colors">Contato</a>
+      </nav>
+
+      <!-- Tools -->
+      <div class="flex items-center gap-2">
+        <div class="flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 gap-1">
+          <button @click="cycleFs()" class="w-8 h-8 rounded-full flex items-center justify-center text-ink/50 dark:text-white/50 hover:text-teal-600 hover:bg-white/60 dark:hover:bg-white/10 transition-all text-xs" title="Fonte">
+            <i class="fa-solid fa-font"></i>
+          </button>
+          <button @click="toggleDark()" class="w-8 h-8 rounded-full flex items-center justify-center text-ink/50 dark:text-white/50 hover:text-teal-600 hover:bg-white/60 dark:hover:bg-white/10 transition-all text-xs">
+            <i class="fa-solid" :class="dark?'fa-sun':'fa-moon'"></i>
+          </button>
         </div>
-    </section>
-
-    <!-- ——— TRUST STRIP ——— -->
-    <section class="bg-sage-600 dark:bg-sage-800 py-5 reveal">
-        <div class="max-w-7xl mx-auto px-5 lg:px-10">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-white text-center">
-                <div class="flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-heart-pulse text-blush-300 text-xl"></i>
-                    <span class="text-sm font-medium">Cuidado integral</span>
-                </div>
-                <div class="flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-children text-blush-300 text-xl"></i>
-                    <span class="text-sm font-medium">Da infância ao idoso</span>
-                </div>
-                <div class="flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-handshake text-blush-300 text-xl"></i>
-                    <span class="text-sm font-medium">Convênios aceitos</span>
-                </div>
-                <div class="flex items-center justify-center gap-3">
-                    <i class="fa-brands fa-whatsapp text-blush-300 text-xl"></i>
-                    <span class="text-sm font-medium">Agende em segundos</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ——— SOBRE ——— -->
-    <section id="sobre" class="py-28 bg-white dark:bg-[#111f23] relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-5 lg:px-10 grid lg:grid-cols-2 gap-20 items-center">
-
-            <!-- Imagem composta -->
-            <div class="relative reveal-l">
-                <div class="absolute -top-8 -left-8 w-72 h-72 rounded-full bg-blush-100/60 dark:bg-blush-900/20 blur-2xl pointer-events-none"></div>
-
-                <div class="relative grid grid-cols-2 gap-4">
-                    <div class="col-span-2 rounded-3xl overflow-hidden h-56 shadow-lg">
-                        <img src="./assets/atendimento.jpg" alt="Atendimento humanizado" class="w-full h-full object-cover">
-                    </div>
-                    <div class="rounded-2xl overflow-hidden h-44 shadow-md">
-                        <img src="./assets/pilates.jpg" alt="Pilates" class="w-full h-full object-cover">
-                    </div>
-                    <div class="rounded-2xl overflow-hidden h-44 shadow-md">
-                        <img src="./assets/infantil.jpg" alt="Atendimento infantil" class="w-full h-full object-cover">
-                    </div>
-                </div>
-
-                <!-- Badge flutuante -->
-                <div class="absolute -bottom-5 -right-5 bg-sage-600 text-white rounded-2xl shadow-xl px-6 py-4 text-center">
-                    <p class="text-3xl font-display font-bold">+5</p>
-                    <p class="text-xs mt-0.5 opacity-80">anos cuidando<br>de Teresópolis</p>
-                </div>
-            </div>
-
-            <!-- Texto -->
-            <div class="reveal-r">
-                <p class="text-sm font-bold text-blush-500 uppercase tracking-widest mb-3">Nossa História</p>
-                <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
-                    Nascemos do desejo<br>de <span class="hero-line">transformar vidas</span>.
-                </h2>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-5 text-base">
-                    A Clínica Multi Evoluir nasceu com uma missão clara: integrar saúde e bem-estar sob um mesmo teto, com atendimento acolhedor e de excelência. Estamos localizados na Várzea, em Teresópolis — RJ, e atendemos crianças, adultos e idosos.
-                </p>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-8 text-base">
-                    Nossa equipe multidisciplinar trabalha de forma colaborativa, garantindo um cuidado completo, sistêmico e humanizado — do corpo à mente, do diagnóstico à evolução.
-                </p>
-
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-sage-50 dark:bg-sage-900/30 rounded-2xl p-5">
-                        <i class="fa-solid fa-stethoscope text-sage-500 text-xl mb-2"></i>
-                        <p class="font-bold text-slate-900 dark:text-white text-sm">Abordagem Multidisciplinar</p>
-                    </div>
-                    <div class="bg-blush-50 dark:bg-blush-900/20 rounded-2xl p-5">
-                        <i class="fa-solid fa-hand-holding-heart text-blush-500 text-xl mb-2"></i>
-                        <p class="font-bold text-slate-900 dark:text-white text-sm">Atenção Humanizada</p>
-                    </div>
-                    <div class="bg-blush-50 dark:bg-blush-900/20 rounded-2xl p-5">
-                        <i class="fa-solid fa-children text-blush-500 text-xl mb-2"></i>
-                        <p class="font-bold text-slate-900 dark:text-white text-sm">Para Todas as Idades</p>
-                    </div>
-                    <div class="bg-sage-50 dark:bg-sage-900/30 rounded-2xl p-5">
-                        <i class="fa-solid fa-shield-heart text-sage-500 text-xl mb-2"></i>
-                        <p class="font-bold text-slate-900 dark:text-white text-sm">Equipe Especializada</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <p class="text-xs text-slate-400">Registro: 007114RJ</p>
-                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                    <a :href="cfg.instagram" target="_blank" class="flex items-center gap-1.5 text-xs font-semibold text-sage-600 hover:underline">
-                        <i class="fa-brands fa-instagram"></i> @clinicamultievoluir
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ——— ESPECIALIDADES ——— -->
-    <section id="especialidades" class="py-28 bg-cream dark:bg-[#0d1517] relative overflow-hidden">
-
-        <!-- Decoração top -->
-        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none">
-            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" class="w-full" preserveAspectRatio="none">
-                <path d="M0,30 C360,60 1080,0 1440,30 L1440,0 L0,0 Z" class="fill-white dark:fill-[#111f23]"/>
-            </svg>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-5 lg:px-10 relative z-10">
-            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
-                <p class="text-sm font-bold text-blush-500 uppercase tracking-widest mb-3">O que oferecemos</p>
-                <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4">Especialidades que<br><span class="grad-text">cuidam de você.</span></h2>
-                <p class="text-slate-600 dark:text-slate-400">Clique em qualquer especialidade para agendar diretamente pelo WhatsApp.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 reveal">
-                <template x-for="srv in db.services" :key="srv.id">
-                    <div @click="openModal('schedule', srv.id)" class="srv-card group bg-white dark:bg-[#111f23] rounded-[1.75rem] border border-sage-100 dark:border-sage-800/50 p-7 cursor-pointer relative overflow-hidden">
-
-                        <!-- Bg blob on hover -->
-                        <div class="absolute top-0 right-0 w-28 h-28 rounded-full blur-2xl bg-sage-100 dark:bg-sage-900/40 group-hover:bg-sage-200/60 transition-all duration-500 -translate-y-1/2 translate-x-1/2"></div>
-
-                        <!-- Icon -->
-                        <div class="w-14 h-14 rounded-2xl bg-sage-50 dark:bg-sage-900/50 flex items-center justify-center mb-5 group-hover:bg-sage-600 transition-colors duration-300 relative z-10">
-                            <i class="fa-solid text-2xl text-sage-600 group-hover:text-white transition-colors duration-300" :class="srv.icon"></i>
-                        </div>
-
-                        <h3 class="font-bold text-slate-900 dark:text-white text-lg mb-1 relative z-10" x-text="srv.name"></h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 relative z-10" x-text="srv.desc"></p>
-
-                        <div class="flex items-center text-sm font-semibold text-sage-600 gap-2 relative z-10">
-                            <span>Agendar</span>
-                            <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </section>
-
-    <!-- ——— EQUIPE ——— -->
-    <section id="equipe" class="py-28 bg-white dark:bg-[#111f23]">
-        <div class="max-w-7xl mx-auto px-5 lg:px-10">
-            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
-                <p class="text-sm font-bold text-blush-500 uppercase tracking-widest mb-3">Quem vai te atender</p>
-                <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white">Profissionais de <span class="text-sage-600">excelência</span>.</h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
-                <template x-for="pro in db.professionals" :key="pro.id">
-                    <div class="flex items-center gap-5 p-5 rounded-2xl border border-sage-100 dark:border-sage-800/40 bg-sage-50/50 dark:bg-sage-900/20 hover:shadow-md transition-shadow">
-                        <!-- Avatar gerado -->
-                        <div class="w-16 h-16 rounded-full flex-shrink-0 flex items-center justify-center text-xl font-display font-bold text-white shadow-md"
-                             :style="`background: ${pro.color || '#5a8a96'}`"
-                             x-text="pro.name.split(' ').map(n=>n[0]).slice(0,2).join('')">
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-white text-base leading-tight" x-text="pro.name"></h4>
-                            <p class="text-sage-600 dark:text-sage-400 text-sm font-medium mt-0.5" x-text="getServiceName(pro.serviceId)"></p>
-                            <p class="text-xs text-slate-400 font-mono mt-1 bg-white dark:bg-[#0d1517] px-2 py-0.5 rounded inline-block" x-text="pro.registry"></p>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </section>
-
-    <!-- ——— CONVÊNIOS + GALERIA ——— -->
-    <section id="estrutura" class="py-28 bg-slate-900 dark:bg-[#070f11] text-white relative overflow-hidden">
-
-        <!-- Decoração -->
-        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none">
-            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" class="w-full" preserveAspectRatio="none">
-                <path d="M0,30 C360,60 1080,0 1440,30 L1440,0 L0,0 Z" class="fill-white dark:fill-[#111f23]"/>
-            </svg>
-        </div>
-        <div class="absolute inset-0 opacity-5" style="background-image:radial-gradient(circle at 1px 1px,#fff 1px,transparent 0);background-size:32px 32px;"></div>
-
-        <div class="max-w-7xl mx-auto px-5 lg:px-10 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-20">
-
-                <!-- CONVÊNIOS -->
-                <div class="reveal-l">
-                    <p class="text-sm font-bold text-blush-300 uppercase tracking-widest mb-3">Planos e Convênios</p>
-                    <h3 class="font-display text-3xl font-bold mb-8">Convênios aceitos.</h3>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
-                        <template x-for="conv in db.convenios" :key="conv">
-                            <div class="bg-white/10 border border-white/15 rounded-xl px-3 py-2.5 text-center text-sm font-medium hover:bg-white/20 transition-colors" x-text="conv"></div>
-                        </template>
-                    </div>
-
-                    <p class="text-slate-400 text-sm">Também atendemos de forma particular. Consulte valores pelo WhatsApp.</p>
-
-                    <!-- Horários -->
-                    <div class="mt-10">
-                        <p class="text-sm font-bold text-blush-300 uppercase tracking-widest mb-4">Horário de funcionamento</p>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between bg-white/8 border border-white/10 rounded-xl px-4 py-3">
-                                <span class="text-sm font-medium">Segunda a Sexta</span>
-                                <span class="text-sm text-sage-300 font-bold" x-text="cfg.hoursWeek || '08h às 19h'"></span>
-                            </div>
-                            <div class="flex items-center justify-between bg-white/8 border border-white/10 rounded-xl px-4 py-3">
-                                <span class="text-sm font-medium">Sábado</span>
-                                <span class="text-sm font-bold" :class="cfg.hoursSat && cfg.hoursSat.toLowerCase()!=='fechado' ? 'text-sage-300' : 'text-slate-500'" x-text="cfg.hoursSat || 'Fechado'"></span>
-                            </div>
-                            <div class="flex items-center justify-between bg-white/8 border border-white/10 rounded-xl px-4 py-3">
-                                <span class="text-sm font-medium">Domingo</span>
-                                <span class="text-sm text-slate-500 font-bold">Fechado</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- GALERIA -->
-                <div class="reveal-r">
-                    <p class="text-sm font-bold text-blush-300 uppercase tracking-widest mb-3">Nossa Estrutura</p>
-                    <h3 class="font-display text-3xl font-bold mb-8">Um espaço pensado<br>para você evoluir.</h3>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <template x-for="(img, idx) in db.gallery.slice(0,6)" :key="idx">
-                            <button @click="openLightbox(idx)"
-                                    class="group relative overflow-hidden rounded-2xl"
-                                    :class="idx===0 ? 'col-span-2 h-48' : 'h-32'">
-                                <img :src="img" :alt="`Estrutura ${idx+1}`" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                                    <span class="text-white text-xs font-semibold">Ampliar</span>
-                                </div>
-                            </button>
-                        </template>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ——— LOCALIZAÇÃO / CONTATO ——— -->
-    <section id="contato" class="py-28 bg-cream dark:bg-[#0d1517]">
-        <div class="max-w-7xl mx-auto px-5 lg:px-10">
-
-            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
-                <p class="text-sm font-bold text-blush-500 uppercase tracking-widest mb-3">Venha nos visitar</p>
-                <h2 class="font-display text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white">Onde nos encontrar.</h2>
-            </div>
-
-            <div class="grid lg:grid-cols-2 gap-12 items-start reveal">
-
-                <!-- Info cards -->
-                <div class="space-y-4">
-                    <a :href="`https://wa.me/${cfg.whatsappRaw}`" target="_blank"
-                       class="flex items-center gap-5 p-5 bg-white dark:bg-[#111f23] rounded-2xl border border-sage-100 dark:border-sage-800/40 hover:shadow-lg transition-shadow group">
-                        <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 text-xl">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase font-semibold tracking-wider">WhatsApp / Telefone</p>
-                            <p class="font-bold text-slate-900 dark:text-white group-hover:text-sage-600 transition-colors" x-text="cfg.phone"></p>
-                        </div>
-                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 ml-auto text-sm"></i>
-                    </a>
-
-                    <a :href="`mailto:${cfg.email}`"
-                       class="flex items-center gap-5 p-5 bg-white dark:bg-[#111f23] rounded-2xl border border-sage-100 dark:border-sage-800/40 hover:shadow-lg transition-shadow group">
-                        <div class="w-12 h-12 rounded-xl bg-sage-100 dark:bg-sage-900/40 flex items-center justify-center text-sage-600 text-xl">
-                            <i class="fa-solid fa-envelope"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase font-semibold tracking-wider">E-mail</p>
-                            <p class="font-bold text-slate-900 dark:text-white group-hover:text-sage-600 transition-colors text-sm" x-text="cfg.email"></p>
-                        </div>
-                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 ml-auto text-sm"></i>
-                    </a>
-
-                    <div class="flex items-start gap-5 p-5 bg-white dark:bg-[#111f23] rounded-2xl border border-sage-100 dark:border-sage-800/40">
-                        <div class="w-12 h-12 rounded-xl bg-blush-100 dark:bg-blush-900/20 flex items-center justify-center text-blush-500 text-xl flex-shrink-0">
-                            <i class="fa-solid fa-location-dot"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase font-semibold tracking-wider mb-1">Endereço</p>
-                            <p class="font-bold text-slate-900 dark:text-white" x-text="cfg.address"></p>
-                            <a href="https://maps.app.goo.gl/6ve6xq8hQhkziqet9" target="_blank" class="text-sm text-sage-600 hover:underline mt-1 block">Ver no Google Maps →</a>
-                        </div>
-                    </div>
-
-                    <a :href="cfg.instagram" target="_blank"
-                       class="flex items-center gap-5 p-5 bg-white dark:bg-[#111f23] rounded-2xl border border-sage-100 dark:border-sage-800/40 hover:shadow-lg transition-shadow group">
-                        <div class="w-12 h-12 rounded-xl bg-pink-100 dark:bg-pink-900/20 flex items-center justify-center text-pink-500 text-xl">
-                            <i class="fa-brands fa-instagram"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase font-semibold tracking-wider">Instagram</p>
-                            <p class="font-bold text-slate-900 dark:text-white group-hover:text-sage-600 transition-colors">@clinicamultievoluir</p>
-                        </div>
-                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 ml-auto text-sm"></i>
-                    </a>
-                </div>
-
-                <!-- Mapa embed -->
-                <div class="rounded-3xl overflow-hidden shadow-xl border border-sage-100 dark:border-sage-800/40 h-[420px] relative">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3669.7!2d-42.9772!3d-22.4123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDI0JzQ0LjMiUyA0MsKwNTgnMzguMiJX!5e0!3m2!1spt-BR!2sbr!4v1234567890"
-                        class="w-full h-full border-0"
-                        allowfullscreen loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Localização Clínica Evoluir">
-                    </iframe>
-                    <a href="https://maps.app.goo.gl/6ve6xq8hQhkziqet9" target="_blank"
-                       class="absolute bottom-4 right-4 bg-sage-600 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg hover:bg-sage-700 transition-colors flex items-center gap-2">
-                        <i class="fa-solid fa-map-location-dot"></i> Abrir no Maps
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ——— CTA FINAL ——— -->
-    <section class="py-24 bg-gradient-to-br from-sage-700 to-sage-900 text-white text-center relative overflow-hidden reveal">
-        <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 1px 1px,#fff 1px,transparent 0);background-size:24px 24px;"></div>
-        <div class="absolute top-0 right-0 w-72 h-72 rounded-full bg-blush-400/20 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-sage-400/20 blur-3xl"></div>
-
-        <div class="max-w-2xl mx-auto px-5 relative z-10">
-            <p class="text-blush-200 text-sm font-bold uppercase tracking-widest mb-4">Dê o primeiro passo</p>
-            <h2 class="font-display text-4xl lg:text-5xl font-bold mb-6">Pronto para evoluir?</h2>
-            <p class="text-sage-200 text-lg mb-10">Agende sua consulta hoje mesmo. É rápido, fácil e pelo WhatsApp.</p>
-            <button @click="openModal('schedule')" class="bg-white text-sage-700 hover:bg-cream px-10 py-4 rounded-full font-bold text-lg shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-1 inline-flex items-center gap-3">
-                Agendar agora <i class="fa-brands fa-whatsapp text-green-600 text-xl"></i>
-            </button>
-        </div>
-    </section>
-
-    <!-- ——— FOOTER ——— -->
-    <footer class="bg-slate-900 text-slate-400 py-12">
-        <div class="max-w-7xl mx-auto px-5 lg:px-10">
-            <div class="grid md:grid-cols-3 gap-8 mb-10 pb-10 border-b border-slate-800">
-
-                <!-- Brand -->
-                <div>
-                    <div class="flex items-center gap-3 mb-4">
-                        <img :src="cfg.logo" alt="Evoluir" class="w-10 h-10 rounded-full object-cover border border-sage-700">
-                        <div>
-                            <span class="font-display font-bold text-xl text-sage-300 block leading-none">evoluir</span>
-                            <span class="text-[.55rem] uppercase tracking-widest text-sage-600">Clínica Multidisciplinar</span>
-                        </div>
-                    </div>
-                    <p class="text-sm leading-relaxed text-slate-500">Cuidado humanizado em Teresópolis, integrando saúde física, mental e emocional.</p>
-                </div>
-
-                <!-- Links -->
-                <div>
-                    <h5 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Navegação</h5>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#sobre" class="hover:text-sage-300 transition-colors">Sobre a Clínica</a></li>
-                        <li><a href="#especialidades" class="hover:text-sage-300 transition-colors">Especialidades</a></li>
-                        <li><a href="#equipe" class="hover:text-sage-300 transition-colors">Nossa Equipe</a></li>
-                        <li><a href="#estrutura" class="hover:text-sage-300 transition-colors">Estrutura</a></li>
-                        <li><a href="#contato" class="hover:text-sage-300 transition-colors">Contato</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contato -->
-                <div>
-                    <h5 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Contato</h5>
-                    <div class="space-y-2 text-sm">
-                        <p x-text="cfg.address" class="text-slate-500 leading-relaxed"></p>
-                        <p x-text="cfg.phone"></p>
-                        <p x-text="cfg.email" class="text-slate-500"></p>
-                        <div class="flex gap-3 pt-2">
-                            <a :href="cfg.instagram" target="_blank" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-sage-700 flex items-center justify-center transition-colors">
-                                <i class="fa-brands fa-instagram text-sm"></i>
-                            </a>
-                            <a :href="`https://wa.me/${cfg.whatsappRaw}`" target="_blank" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center transition-colors">
-                                <i class="fa-brands fa-whatsapp text-sm"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                <p>© 2026 Clínica Multi Evoluir. Todos os direitos reservados. Reg. 007114RJ</p>
-                <button @click="openModal('login')" class="hover:text-sage-400 transition-colors flex items-center gap-1">
-                    <i class="fa-solid fa-lock text-xs"></i> Área Administrativa
-                </button>
-            </div>
-        </div>
-    </footer>
-
-    <!-- WhatsApp Fab -->
-    <a :href="`https://wa.me/${cfg.whatsappRaw}?text=Olá, gostaria de agendar uma consulta!`" target="_blank"
-       class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl transition-all hover:scale-110 sm:hidden">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
-</div>
-<!-- FIM SITE PÚBLICO -->
-
-
-<!-- ═══════════════════════════════════════════════════════════
-     PAINEL ADMIN
-════════════════════════════════════════════════════════════════ -->
-<div x-show="view==='admin'" x-cloak class="flex h-screen bg-slate-50 dark:bg-[#0a0a0a] overflow-hidden">
-
-    <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 bg-slate-900 dark:bg-[#070f11] flex flex-col border-r border-slate-800">
-        <div class="h-20 flex items-center px-6 border-b border-slate-800">
-            <div class="flex items-center gap-3">
-                <img :src="cfg.logo" alt="Evoluir" class="w-9 h-9 rounded-full object-cover border border-sage-700">
-                <div>
-                    <span class="font-display font-bold text-sage-300 block leading-none">evoluir</span>
-                    <span class="text-[.5rem] text-slate-500 uppercase tracking-wider">Painel Admin</span>
-                </div>
-            </div>
-        </div>
-        <nav class="flex-grow overflow-y-auto py-4 px-3 space-y-1">
-            <template x-for="(tab, key) in adminTabs" :key="key">
-                <button @click="adminTab=key"
-                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
-                        :class="adminTab===key ? 'bg-sage-700 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-                    <i class="fa-solid w-4 text-center" :class="tab.icon"></i>
-                    <span x-text="tab.label"></span>
-                </button>
-            </template>
-        </nav>
-        <div class="p-4 border-t border-slate-800 space-y-1">
-            <button @click="toggleDark()" class="w-full flex items-center justify-between text-sm px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
-                <span x-text="isDark ? 'Modo Claro' : 'Modo Escuro'"></span>
-                <i class="fa-solid" :class="isDark?'fa-sun':'fa-moon'"></i>
-            </button>
-            <button @click="logout()" class="w-full flex items-center justify-between text-sm px-4 py-2.5 rounded-xl text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors">
-                Sair <i class="fa-solid fa-right-from-bracket"></i>
-            </button>
-        </div>
-    </aside>
-
-    <!-- Main -->
-    <main class="flex-grow flex flex-col overflow-hidden">
-        <header class="h-20 bg-white dark:bg-[#121212] border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between flex-shrink-0">
-            <h1 class="font-bold text-slate-900 dark:text-white text-lg" x-text="adminTabs[adminTab].label"></h1>
-            <div class="flex items-center gap-4">
-                <span class="px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-full border border-amber-200 dark:border-amber-800/40 flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> Cache Local
-                </span>
-                <button @click="view='public'" class="px-5 py-2 bg-sage-600 hover:bg-sage-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm">
-                    Ver Site <i class="fa-solid fa-external-link-alt ml-1 text-xs"></i>
-                </button>
-            </div>
-        </header>
-
-        <div class="flex-grow overflow-y-auto p-8 bg-slate-50 dark:bg-[#0a0a0a]">
-
-            <!-- DASHBOARD -->
-            <div x-show="adminTab==='dashboard'">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                    <div class="bg-white dark:bg-[#1a2b2f] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-xl bg-sage-100 dark:bg-sage-900/50 text-sage-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-stethoscope"></i></div>
-                        <div><p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Especialidades</p><p class="text-3xl font-bold text-slate-900 dark:text-white" x-text="db.services.length"></p></div>
-                    </div>
-                    <div class="bg-white dark:bg-[#1a2b2f] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-xl bg-blush-100 dark:bg-blush-900/20 text-blush-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-user-doctor"></i></div>
-                        <div><p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Profissionais</p><p class="text-3xl font-bold text-slate-900 dark:text-white" x-text="db.professionals.length"></p></div>
-                    </div>
-                    <div class="bg-white dark:bg-[#1a2b2f] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-xl bg-purple-100 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center text-2xl"><i class="fa-solid fa-handshake"></i></div>
-                        <div><p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Convênios</p><p class="text-3xl font-bold text-slate-900 dark:text-white" x-text="db.convenios.length"></p></div>
-                    </div>
-                </div>
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/40 rounded-2xl p-6 flex gap-4">
-                    <i class="fa-solid fa-circle-info text-blue-500 text-xl mt-0.5"></i>
-                    <div>
-                        <h3 class="font-bold text-blue-900 dark:text-blue-200 mb-1">Mockup — Dados em cache local</h3>
-                        <p class="text-sm text-blue-700 dark:text-blue-300">As alterações refletem imediatamente no site público e são salvas no localStorage. Pronto para integração com Supabase, Firebase ou API REST.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CONFIG -->
-            <div x-show="adminTab==='config'" style="display:none;">
-                <div class="bg-white dark:bg-[#1a2b2f] rounded-2xl border border-slate-200 dark:border-slate-700 p-8 max-w-4xl space-y-6">
-                    <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-4">Identidade e Contato</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Telefone / WhatsApp</label>
-                            <input type="text" x-model="cfg.phone" class="inp">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">E-mail</label>
-                            <input type="email" x-model="cfg.email" class="inp">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Endereço</label>
-                            <input type="text" x-model="cfg.address" class="inp">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Instagram (URL)</label>
-                            <input type="url" x-model="cfg.instagram" class="inp">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Horário Seg–Sex</label>
-                            <input type="text" x-model="cfg.hoursWeek" class="inp" placeholder="08h às 19h">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Horário Sábado</label>
-                            <input type="text" x-model="cfg.hoursSat" class="inp" placeholder="Fechado">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Logo (upload)</label>
-                            <div class="flex items-start gap-4">
-                                <img :src="cfg.logo" alt="Logo" class="w-20 h-20 rounded-2xl object-cover border border-slate-200 dark:border-slate-700">
-                                <input type="file" accept="image/*" @change="handleLogo($event)" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-sage-600 file:text-white hover:file:bg-sage-700 mt-2">
-                            </div>
-                        </div>
-                    </div>
-
-                    <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-4 pt-4">Galeria (até 7 fotos)</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                        <template x-for="(img,i) in db.gallery" :key="i">
-                            <div class="relative group rounded-xl overflow-hidden h-24">
-                                <img :src="img" class="w-full h-full object-cover">
-                                <button @click="removeGallery(i)" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-bold">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </template>
-                        <label x-show="db.gallery.length < 7" class="h-24 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex flex-col items-center justify-center text-slate-400 cursor-pointer hover:border-sage-400 hover:text-sage-500 transition-colors">
-                            <i class="fa-solid fa-plus text-xl mb-1"></i>
-                            <span class="text-xs">Adicionar</span>
-                            <input type="file" accept="image/*" class="hidden" @change="handleGallery($event)">
-                        </label>
-                    </div>
-
-                    <button @click="saveConfig()" class="bg-sage-600 hover:bg-sage-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors shadow-sm">
-                        Salvar Configurações
-                    </button>
-                </div>
-            </div>
-
-            <!-- ESPECIALIDADES ADMIN -->
-            <div x-show="adminTab==='servicos'" style="display:none;" class="max-w-4xl space-y-6">
-                <div class="bg-white dark:bg-[#1a2b2f] rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-5">Nova Especialidade</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="md:col-span-1">
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Nome</label>
-                            <input type="text" x-model="newSrv.name" class="inp" placeholder="Ex: Fisioterapia">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Ícone (FontAwesome)</label>
-                            <input type="text" x-model="newSrv.icon" class="inp" placeholder="fa-brain">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Descrição curta</label>
-                            <input type="text" x-model="newSrv.desc" class="inp" placeholder="Para crianças e adultos">
-                        </div>
-                    </div>
-                    <button @click="addService()" class="mt-4 bg-sage-600 hover:bg-sage-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors">
-                        <i class="fa-solid fa-plus mr-2"></i> Cadastrar
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <template x-for="srv in db.services" :key="srv.id">
-                        <div class="bg-white dark:bg-[#1a2b2f] p-5 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-4 group relative">
-                            <div class="w-12 h-12 rounded-xl bg-sage-100 dark:bg-sage-900/40 flex items-center justify-center">
-                                <i class="fa-solid text-xl text-sage-600" :class="srv.icon"></i>
-                            </div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-slate-900 dark:text-white" x-text="srv.name"></h4>
-                                <p class="text-xs text-slate-400" x-text="srv.desc"></p>
-                            </div>
-                            <button @click="removeService(srv.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all">
-                                <i class="fa-solid fa-trash text-sm"></i>
-                            </button>
-                        </div>
-                    </template>
-                </div>
-            </div>
-
-            <!-- PROFISSIONAIS ADMIN -->
-            <div x-show="adminTab==='profissionais'" style="display:none;" class="max-w-4xl space-y-6">
-                <div class="bg-white dark:bg-[#1a2b2f] rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-5">Novo Profissional</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Nome completo</label>
-                            <input type="text" x-model="newPro.name" class="inp" placeholder="Dra. Ana Costa">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Registro (CRM, CRP…)</label>
-                            <input type="text" x-model="newPro.registry" class="inp" placeholder="CREFITO 1234">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Especialidade</label>
-                            <select x-model="newPro.serviceId" class="inp">
-                                <option value="">Selecione…</option>
-                                <template x-for="s in db.services" :key="s.id">
-                                    <option :value="s.id" x-text="s.name"></option>
-                                </template>
-                            </select>
-                        </div>
-                    </div>
-                    <button @click="addProfessional()" class="mt-4 bg-sage-600 hover:bg-sage-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors">
-                        <i class="fa-solid fa-plus mr-2"></i> Cadastrar
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <template x-for="pro in db.professionals" :key="pro.id">
-                        <div class="bg-white dark:bg-[#1a2b2f] p-5 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-4 group relative">
-                            <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-base flex-shrink-0" :style="`background:${pro.color||'#5a8a96'}`" x-text="pro.name.split(' ').map(n=>n[0]).slice(0,2).join('')"></div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-slate-900 dark:text-white text-sm" x-text="pro.name"></h4>
-                                <p class="text-xs text-sage-500" x-text="getServiceName(pro.serviceId)"></p>
-                                <p class="text-xs text-slate-400 font-mono mt-0.5" x-text="pro.registry"></p>
-                            </div>
-                            <button @click="removeProfessional(pro.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all">
-                                <i class="fa-solid fa-trash text-sm"></i>
-                            </button>
-                        </div>
-                    </template>
-                </div>
-            </div>
-
-            <!-- CONVÊNIOS ADMIN -->
-            <div x-show="adminTab==='convenios'" style="display:none;" class="max-w-2xl space-y-6">
-                <div class="bg-white dark:bg-[#1a2b2f] rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex gap-4">
-                    <input type="text" x-model="newConvenio" class="inp" placeholder="Ex: Unimed" @keydown.enter="addConvenio()">
-                    <button @click="addConvenio()" class="bg-sage-600 hover:bg-sage-700 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-colors flex-shrink-0">Adicionar</button>
-                </div>
-                <div class="bg-white dark:bg-[#1a2b2f] rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-                    <div class="flex flex-wrap gap-3">
-                        <template x-for="(c, i) in db.convenios" :key="i">
-                            <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#0d1517] border border-slate-200 dark:border-slate-700 pl-4 pr-2 py-2 rounded-xl">
-                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300" x-text="c"></span>
-                                <button @click="removeConvenio(i)" class="text-slate-400 hover:text-red-500 w-5 h-5 flex items-center justify-center rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                                    <i class="fa-solid fa-xmark text-xs"></i>
-                                </button>
-                            </div>
-                        </template>
-                        <p x-show="db.convenios.length===0" class="text-slate-400 text-sm">Nenhum convênio cadastrado.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-</div>
-<!-- FIM ADMIN -->
-
-
-<!-- ═══════════════════════════════════════════════════════════
-     MODAL: AGENDAMENTO
-════════════════════════════════════════════════════════════════ -->
-<div x-show="modals.schedule" x-cloak class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
-     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-     x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0">
-    <div class="modal-bg absolute inset-0" @click="closeModals()"></div>
-    <div class="relative bg-white dark:bg-[#111f23] rounded-3xl shadow-2xl border border-sage-100 dark:border-sage-800/50 w-full max-w-md p-8"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
-
-        <button @click="closeModals()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors">
-            <i class="fa-solid fa-xmark"></i>
+        <button @click="om('login')" class="w-8 h-8 rounded-full flex items-center justify-center text-ink/30 dark:text-white/30 hover:text-teal-600 transition-colors">
+          <i class="fa-solid fa-lock text-xs"></i>
         </button>
-
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center text-xl">
-                <i class="fa-brands fa-whatsapp"></i>
-            </div>
-            <div>
-                <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white">Agendar Consulta</h3>
-                <p class="text-xs text-slate-400">Envio direto pelo WhatsApp</p>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Seu nome *</label>
-                <input type="text" x-model="scheduleData.name" class="inp" placeholder="Como devo te chamar?">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Especialidade *</label>
-                <select x-model="scheduleData.serviceId" class="inp">
-                    <option value="">Selecione uma especialidade…</option>
-                    <template x-for="s in db.services" :key="s.id">
-                        <option :value="s.id" x-text="s.name"></option>
-                    </template>
-                </select>
-            </div>
-            <div x-show="getProsForService().length > 0">
-                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Profissional (opcional)</label>
-                <select x-model="scheduleData.proId" class="inp">
-                    <option value="">Sem preferência</option>
-                    <template x-for="p in getProsForService()" :key="p.id">
-                        <option :value="p.name" x-text="p.name"></option>
-                    </template>
-                </select>
-            </div>
-        </div>
-
-        <button @click="sendWhatsApp()" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-2xl font-bold text-base transition-colors shadow-lg flex items-center justify-center gap-3">
-            Enviar pelo WhatsApp <i class="fa-brands fa-whatsapp text-xl"></i>
+        <button @click="om('sched')" class="btn-p hidden sm:inline-flex text-sm py-2.5 px-5">
+          Agendar <i class="fa-brands fa-whatsapp"></i>
         </button>
-        <p class="text-center text-xs text-slate-400 mt-4">Você será redirecionado ao WhatsApp da clínica</p>
+      </div>
     </div>
-</div>
+  </header>
 
-<!-- ═══════════════════════════════════════════════════════════
-     MODAL: LOGIN ADMIN
-════════════════════════════════════════════════════════════════ -->
-<div x-show="modals.login" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4"
-     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-     x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0">
-    <div class="modal-bg absolute inset-0" @click="closeModals()"></div>
-    <div class="relative bg-white dark:bg-[#111f23] rounded-3xl shadow-2xl border border-sage-100 dark:border-sage-800/50 w-full max-w-sm p-8"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+  <!-- ── HERO ── -->
+  <section class="relative min-h-screen flex items-end pb-20 pt-32 overflow-hidden bg-paper dark:bg-ink">
 
-        <button @click="closeModals()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+    <!-- BG texture sutil -->
+    <div class="absolute inset-0 opacity-[.03]" style="background-image:url(\'data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235a8a96' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\');"></div>
 
-        <div class="flex justify-center mb-6">
-            <div class="w-14 h-14 rounded-2xl bg-sage-100 dark:bg-sage-900/50 text-sage-600 flex items-center justify-center text-2xl">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-        </div>
-        <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white text-center mb-1">Área Restrita</h3>
-        <p class="text-xs text-center text-slate-400 mb-6">Acesso somente para administradores</p>
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full grid lg:grid-cols-[1fr_420px] gap-12 items-end">
 
-        <div class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Usuário</label>
-                <input type="text" x-model="loginData.user" class="inp" placeholder="admin" @keydown.enter="doLogin()">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Senha</label>
-                <input type="password" x-model="loginData.pass" class="inp" placeholder="••••••" @keydown.enter="doLogin()">
-            </div>
+      <!-- Copy -->
+      <div>
+        <!-- Título principal -->
+        <h1 class="hero-title rv" style="transition-delay:.1s">
+          Cuidar,<br>
+          <em>evoluir</em>,<br>
+          transformar.
+        </h1>
+
+        <!-- Linha decorativa + subtítulo -->
+        <div class="flex items-start gap-6 mt-8 mb-10 rv" style="transition-delay:.2s">
+          <div class="w-px h-16 bg-blush-400 mt-1 flex-shrink-0"></div>
+          <p class="text-base text-ink/60 dark:text-white/60 leading-relaxed max-w-sm">
+            Uma equipe multidisciplinar dedicada ao desenvolvimento humano — físico, mental e emocional — desde a infância à melhor idade.
+          </p>
         </div>
 
-        <button @click="doLogin()" class="mt-6 w-full bg-sage-600 hover:bg-sage-700 text-white py-3.5 rounded-2xl font-bold transition-colors shadow-md">
-            Entrar no Painel
-        </button>
-        <p class="text-center text-xs text-slate-400 mt-3">Demo: admin / admin</p>
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-3 rv" style="transition-delay:.3s">
+          <button @click="om('sched')" class="btn-p">
+            Agendar Consulta <i class="fa-brands fa-whatsapp"></i>
+          </button>
+          <a href="#especialidades" class="btn-o">
+            Ver Especialidades
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex flex-wrap gap-8 mt-12 rv" style="transition-delay:.4s">
+          <div class="stat-block">
+            <p class="font-display text-3xl font-light text-teal-600">+500</p>
+            <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">pacientes atendidos</p>
+          </div>
+          <div class="stat-block">
+            <p class="font-display text-3xl font-light text-teal-600" x-text="db.services.length+'+'"></p>
+            <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">especialidades</p>
+          </div>
+          <div class="stat-block">
+            <p class="font-display text-3xl font-light text-teal-600" x-text="db.professionals.length+'+'"></p>
+            <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">profissionais</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Imagem hero -->
+      <div class="relative rv-r" style="transition-delay:.2s">
+        <div class="hero-img-wrap h-[520px] lg:h-[580px] shadow-2xl flt">
+          <img src="./assets/fachada-clinica.png" alt="Clínica Evoluir" class="w-full h-full object-cover">
+          <div class="grad-ov"></div>
+          <!-- Badge dentro da imagem -->
+          <div class="absolute bottom-5 left-5 right-5 bg-white/90 dark:bg-ink/90 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4 border border-teal-100/50 dark:border-teal-900/50">
+            <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-900/50 flex items-center justify-center text-teal-600">
+              <i class="fa-solid fa-location-dot text-sm"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-ink dark:text-white">R. Maj. Carvalho, 65 — Várzea</p>
+              <p class="text-[.7rem] text-ink/50 dark:text-white/50" x-text="cfg.hours"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cartão flutuante avaliação -->
+        <div class="absolute -left-6 top-16 bg-white dark:bg-teal-900/80 rounded-2xl shadow-xl p-4 border border-teal-50 dark:border-teal-800 flt2 hidden lg:block">
+          <div class="flex gap-0.5 mb-1.5">
+            <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+            <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+            <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+            <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+            <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+          </div>
+          <p class="font-display text-sm italic text-ink dark:text-white">"Lugar maravilhoso!"</p>
+          <p class="text-[.65rem] text-ink/40 dark:text-white/40 mt-1">Google Reviews · 5.0</p>
+        </div>
+      </div>
     </div>
-</div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     LIGHTBOX GALERIA
-════════════════════════════════════════════════════════════════ -->
-<div id="lightbox" x-show="lightbox.open" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
-     x-transition:enter="transition duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-     x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0"
-     @click.self="lightbox.open=false" @keydown.escape.window="lightbox.open=false">
-    <button @click="lightbox.open=false" class="absolute top-5 right-5 text-white/70 hover:text-white w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10">
-        <i class="fa-solid fa-xmark"></i>
-    </button>
-    <button @click="galleryPrev()" class="absolute left-4 text-white/70 hover:text-white w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-        <i class="fa-solid fa-chevron-left"></i>
-    </button>
-    <img :src="lightbox.img" class="max-h-[85vh] max-w-[90vw] object-contain rounded-2xl shadow-2xl">
-    <button @click="galleryNext()" class="absolute right-4 text-white/70 hover:text-white w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-        <i class="fa-solid fa-chevron-right"></i>
-    </button>
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-        <template x-for="(img,i) in db.gallery" :key="i">
-            <button @click="openLightbox(i)" class="w-2 h-2 rounded-full transition-colors" :class="i===lightbox.idx ? 'bg-white' : 'bg-white/30'"></button>
+    <!-- Scroll indicator -->
+    <div class="scroll-line hidden md:flex">
+      <span>scroll</span>
+      <div class="scroll-dot"></div>
+    </div>
+  </section>
+
+  <!-- ── SOBRE ── -->
+  <section id="sobre" class="py-32 bg-white dark:bg-teal-900/10 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-[3fr_2fr] gap-20 items-center">
+
+      <!-- Texto editorial -->
+      <div class="rv-l">
+        <span class="label">Nossa história</span>
+        <h2 class="sec-h text-5xl lg:text-6xl text-ink dark:text-white mt-4 mb-8">
+          Nascemos do desejo<br>de <em class="italic text-teal-600">transformar</em><br>vidas em Teresópolis.
+        </h2>
+        <div class="space-y-4 text-ink/65 dark:text-white/65 text-base leading-relaxed max-w-xl">
+          <p>A Clínica Multi Evoluir integra as principais áreas da saúde sob um mesmo teto, com atendimento verdadeiramente humanizado. Criamos um espaço seguro e acolhedor, onde cada paciente é tratado de forma única.</p>
+          <p>Nossa equipe multidisciplinar trabalha de forma colaborativa — garantindo um cuidado completo, sistêmico e que respeita cada etapa da vida, da primeira infância à melhor idade.</p>
+        </div>
+
+        <!-- Pilares -->
+        <div class="grid grid-cols-2 gap-4 mt-10">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-blush-100 dark:bg-blush-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i class="fa-solid fa-heart-pulse text-blush-500 text-xs"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-sm text-ink dark:text-white">Cuidado integral</p>
+              <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">Corpo, mente e emoções</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i class="fa-solid fa-people-group text-teal-500 text-xs"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-sm text-ink dark:text-white">Equipe integrada</p>
+              <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">Trabalho colaborativo</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i class="fa-solid fa-children text-teal-500 text-xs"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-sm text-ink dark:text-white">Todas as idades</p>
+              <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">Da infância à terceira idade</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-blush-100 dark:bg-blush-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i class="fa-solid fa-shield-heart text-blush-500 text-xs"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-sm text-ink dark:text-white">Espaço seguro</p>
+              <p class="text-xs text-ink/50 dark:text-white/50 mt-0.5">Acolhimento real</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 mt-10 pt-8 border-t border-teal-100 dark:border-teal-800/40">
+          <div><p class="font-display text-2xl text-teal-600">+5 anos</p><p class="text-xs text-ink/50 dark:text-white/50">cuidando de Teresópolis</p></div>
+          <div class="w-px h-10 bg-teal-100 dark:bg-teal-800/60"></div>
+          <a :href="cfg.instagram" target="_blank" class="flex items-center gap-2 text-sm font-semibold text-ink/60 dark:text-white/60 hover:text-teal-600 transition-colors">
+            <i class="fa-brands fa-instagram"></i> @clinicamultievoluir
+          </a>
+          <div class="w-px h-10 bg-teal-100 dark:bg-teal-800/60"></div>
+          <div><p class="text-xs text-ink/40 dark:text-white/40">Reg. 007114RJ</p></div>
+        </div>
+      </div>
+
+      <!-- Fotos compostas -->
+      <div class="rv-r relative">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="gal-item h-64 col-span-2 shadow-lg">
+            <img src="./assets/atendimento.jpg" alt="Atendimento">
+            <div class="gal-overlay"><span class="text-white text-xs font-semibold">Atendimento humanizado</span></div>
+          </div>
+          <div class="gal-item h-40 shadow-md">
+            <img src="./assets/pilates.webp" alt="Pilates">
+          </div>
+          <div class="gal-item h-40 shadow-md">
+            <img src="./assets/infantil.jpg" alt="Infantil">
+          </div>
+        </div>
+        <!-- Deco blob -->
+        <div class="absolute -bottom-8 -right-8 w-48 h-48 rounded-full bg-blush-100/60 dark:bg-blush-900/20 blur-3xl -z-10"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ESPECIALIDADES ── -->
+  <section id="especialidades" class="py-32 bg-paper dark:bg-ink relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+      <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-16 gap-6 rv">
+        <div>
+          <span class="label">O que oferecemos</span>
+          <h2 class="sec-h text-5xl lg:text-6xl text-ink dark:text-white mt-3">
+            Cuidado completo<br>para a sua <em class="italic text-teal-600">evolução.</em>
+          </h2>
+        </div>
+        <p class="text-sm text-ink/50 dark:text-white/50 max-w-xs lg:text-right leading-relaxed">
+          Selecione uma especialidade para ver detalhes e agendar pelo WhatsApp.
+        </p>
+      </div>
+
+      <!-- Grid de cards compactos -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 rv" style="transition-delay:.1s">
+        <template x-for="srv in db.services" :key="srv.id">
+          <button @click="openSrvModal(srv.id)"
+                  class="group relative text-left p-5 rounded-2xl border border-teal-100/70 dark:border-teal-900/50 bg-white dark:bg-teal-900/10 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-900/50 text-teal-600 flex items-center justify-center mb-4 group-hover:bg-teal-600 group-hover:text-white transition-colors duration-300">
+              <i class="fa-solid text-sm" :class="srv.icon"></i>
+            </div>
+            <h3 class="font-semibold text-sm text-ink dark:text-white leading-snug" x-text="srv.name"></h3>
+            <div class="mt-3 flex items-center gap-1 text-[.65rem] font-semibold text-teal-500 opacity-0 group-hover:opacity-100 transition-opacity">
+              Ver detalhes <i class="fa-solid fa-arrow-right text-[.55rem]"></i>
+            </div>
+          </button>
         </template>
+      </div>
     </div>
+  </section>
+
+  <!-- Modal especialidade -->
+  <div x-show="srvModal.open" x-cloak
+       class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
+       x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
+       x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0">
+    <div class="modal-bg absolute inset-0" @click="srvModal.open=false"></div>
+    <div class="relative bg-white dark:bg-ink rounded-3xl shadow-2xl border border-teal-50 dark:border-teal-900/50 w-full max-w-md p-8"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95 translate-y-8"
+         x-transition:enter-end="opacity-100 scale-100 translate-y-0">
+
+      <button @click="srvModal.open=false" class="absolute top-5 right-5 text-ink/30 hover:text-ink dark:text-white/30 dark:hover:text-white w-9 h-9 rounded-full hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <template x-if="srvModal.srv">
+        <div>
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center text-xl flex-shrink-0">
+              <i class="fa-solid" :class="srvModal.srv.icon"></i>
+            </div>
+            <div>
+              <h3 class="font-display text-2xl font-light italic text-ink dark:text-white" x-text="srvModal.srv.name"></h3>
+              <p class="text-xs text-ink/40 dark:text-white/40 mt-0.5" x-text="srvModal.srv.desc"></p>
+            </div>
+          </div>
+
+          <!-- Profissionais da especialidade -->
+          <div x-show="getProsForSrv(srvModal.srv.id).length > 0" class="mb-6">
+            <p class="text-[.65rem] uppercase tracking-widest text-ink/40 dark:text-white/40 font-semibold mb-3">Profissionais</p>
+            <div class="space-y-2">
+              <template x-for="pro in getProsForSrv(srvModal.srv.id)" :key="pro.id">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-teal-50/60 dark:bg-teal-900/20">
+                  <div class="av w-9 h-9 text-sm flex-shrink-0" :style="`background:${pro.color||'#5a8a96'}`"
+                       x-text="pro.name.split(' ').map(n=>n[0]).slice(0,2).join('')"></div>
+                  <div>
+                    <p class="text-sm font-semibold text-ink dark:text-white" x-text="pro.name"></p>
+                    <p class="text-[.65rem] text-ink/40 dark:text-white/40 font-mono" x-text="pro.registry"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div x-show="!getProsForSrv(srvModal.srv.id).length" class="mb-6">
+            <p class="text-sm text-ink/40 dark:text-white/40 italic">Profissional a definir.</p>
+          </div>
+
+          <button @click="om('sched', srvModal.srv.id); srvModal.open=false"
+                  class="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-2xl font-semibold text-base transition-colors shadow-lg flex items-center justify-center gap-3">
+            Agendar pelo WhatsApp <i class="fa-brands fa-whatsapp text-xl"></i>
+          </button>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <!-- ── CONVÊNIOS + HORÁRIOS ── -->
+  <section id="estrutura" class="py-32 bg-teal-900 dark:bg-teal-900/50 text-white relative overflow-hidden">
+
+    <!-- Deco -->
+    <div class="absolute inset-0 opacity-[.04]" style="background-image:url(\'data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\');"></div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+      <div class="grid lg:grid-cols-3 gap-16">
+
+        <!-- Convênios -->
+        <div class="rv-l">
+          <span class="label opacity-80">Planos</span>
+          <h3 class="sec-h text-4xl text-white mt-3 mb-8">Convênios<br>aceitos.</h3>
+          <div class="flex flex-wrap gap-2">
+            <template x-for="c in db.convenios" :key="c">
+              <span class="conv-pill !text-teal-200 !border-teal-600 !bg-white/5" x-text="c"></span>
+            </template>
+          </div>
+          <p class="text-teal-300/70 text-sm mt-6 leading-relaxed">Também realizamos atendimentos particulares. Consulte os valores pelo WhatsApp.</p>
+        </div>
+
+        <!-- Horários -->
+        <div class="rv" style="transition-delay:.1s">
+          <span class="label opacity-80">Funcionamento</span>
+          <h3 class="sec-h text-4xl text-white mt-3 mb-8">Nossos<br>horários.</h3>
+          <div class="space-y-1">
+            <div class="hours-row !bg-white/5">
+              <span class="text-teal-100 font-medium">Segunda — Sexta</span>
+              <span class="text-teal-300 font-semibold text-sm" x-text="cfg.hoursWeek || '08h às 19h'"></span>
+            </div>
+            <div class="hours-row">
+              <span class="text-teal-100 font-medium">Sábado</span>
+              <span class="font-semibold text-sm" :class="cfg.hoursSat && cfg.hoursSat.toLowerCase()!=='fechado'?'text-teal-300':'text-white/30'" x-text="cfg.hoursSat || 'Fechado'"></span>
+            </div>
+            <div class="hours-row !bg-white/5">
+              <span class="text-teal-100 font-medium">Domingo</span>
+              <span class="text-white/30 font-semibold text-sm">Fechado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Galeria -->
+        <div class="rv-r" style="transition-delay:.2s">
+          <span class="label opacity-80">Estrutura</span>
+          <h3 class="sec-h text-4xl text-white mt-3 mb-8">Nossa<br>clínica.</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <template x-for="(img, i) in db.gallery.slice(0,4)" :key="i">
+              <button @click="openLb(i)" class="gal-item cursor-pointer" :class="i===0?'col-span-2 h-36':'h-24'">
+                <img :src="img" :alt="`Ambiente ${i+1}`">
+                <div class="gal-overlay items-center justify-center">
+                  <i class="fa-solid fa-magnifying-glass-plus text-white"></i>
+                </div>
+              </button>
+            </template>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EQUIPE ── -->
+  <section id="equipe" class="py-32 bg-white dark:bg-teal-900/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end mb-16 gap-6 rv">
+        <div>
+          <span class="label">Quem vai te atender</span>
+          <h2 class="sec-h text-5xl lg:text-6xl text-ink dark:text-white mt-3">
+            Profissionais<br>de <em class="italic text-teal-600">excelência.</em>
+          </h2>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 rv">
+        <template x-for="pro in db.professionals" :key="pro.id">
+          <div class="flex items-center gap-4 p-5 rounded-2xl border border-teal-50 dark:border-teal-900/40 hover:border-teal-200 dark:hover:border-teal-700/50 hover:shadow-sm transition-all group">
+            <div class="av text-lg shadow-sm" :style="`background:${pro.color||'#5a8a96'}`"
+                 x-text="pro.name.split(' ').map(n=>n[0]).slice(0,2).join('')">
+            </div>
+            <div class="flex-grow min-w-0">
+              <h4 class="font-semibold text-ink dark:text-white text-sm truncate" x-text="pro.name"></h4>
+              <p class="text-xs text-teal-600 dark:text-teal-400 mt-0.5" x-text="srvName(pro.serviceId)"></p>
+              <p class="text-[.65rem] text-ink/35 dark:text-white/35 font-mono mt-1" x-text="pro.registry"></p>
+            </div>
+            <button @click="om('sched', pro.serviceId)" class="opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-colors">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+            </button>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTATO ── -->
+  <section id="contato" class="py-32 bg-paper dark:bg-ink">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="rv mb-16">
+        <span class="label">Venha nos visitar</span>
+        <h2 class="sec-h text-5xl lg:text-6xl text-ink dark:text-white mt-3">Onde nos<br>encontrar.</h2>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8 rv">
+
+        <!-- Esquerda: foto da fachada + endereço -->
+        <div class="flex flex-col gap-5">
+
+          <!-- Foto da fachada -->
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl h-[320px] group">
+            <img src="./assets/fachada-clinica.png" alt="Fachada da Clínica Multi Evoluir — R. Maj. Carvalho, 65, Teresópolis" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105">
+            <!-- Overlay sutil com gradiente inferior -->
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent"></div>
+            <!-- Label sobre a foto -->
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <p class="text-white font-semibold text-sm">Clínica Multi Evoluir</p>
+              <p class="text-white/70 text-xs mt-0.5">R. Maj. Carvalho, 65 — Várzea, Teresópolis · RJ</p>
+            </div>
+          </div>
+
+          <!-- Endereço e contatos simplificados -->
+          <div class="bg-white dark:bg-teal-900/20 rounded-2xl border border-teal-50 dark:border-teal-800/30 p-6 space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-blush-50 dark:bg-blush-900/20 text-blush-500 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-location-dot text-sm"></i>
+              </div>
+              <div>
+                <p class="text-[.65rem] uppercase tracking-widest text-ink/40 dark:text-white/40 font-semibold mb-1">Endereço</p>
+                <p class="font-semibold text-ink dark:text-white text-sm" x-text="cfg.address"></p>
+              </div>
+            </div>
+            <div class="border-t border-teal-50 dark:border-teal-800/30 pt-4 flex flex-wrap gap-3">
+              <a :href="`https://wa.me/${cfg.whatsappRaw}`" target="_blank"
+                 class="flex items-center gap-2 text-xs font-semibold text-ink/60 dark:text-white/60 hover:text-teal-600 transition-colors">
+                <i class="fa-brands fa-whatsapp text-green-500"></i>
+                <span x-text="cfg.phone"></span>
+              </a>
+              <span class="text-ink/20 dark:text-white/20">·</span>
+              <a :href="`mailto:${cfg.email}`"
+                 class="flex items-center gap-2 text-xs font-semibold text-ink/60 dark:text-white/60 hover:text-teal-600 transition-colors">
+                <i class="fa-solid fa-envelope text-teal-400"></i>
+                <span x-text="cfg.email" class="truncate max-w-[180px]"></span>
+              </a>
+              <span class="text-ink/20 dark:text-white/20 hidden sm:inline">·</span>
+              <a :href="cfg.instagram" target="_blank"
+                 class="flex items-center gap-2 text-xs font-semibold text-ink/60 dark:text-white/60 hover:text-teal-600 transition-colors">
+                <i class="fa-brands fa-instagram text-pink-400"></i>
+                <span>@clinicamultievoluir</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direita: Mapa -->
+        <div class="rounded-3xl overflow-hidden shadow-2xl h-[460px] relative border border-teal-50 dark:border-teal-800/30">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3669.5!2d-42.9772!3d-22.4123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDI0JzQ0LjMiUyA0MsKwNTgnMzguMiJX!5e0!3m2!1spt-BR!2sbr!4v1234"
+                  class="w-full h-full border-0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <a href="https://maps.app.goo.gl/6ve6xq8hQhkziqet9" target="_blank"
+             class="absolute bottom-4 right-4 btn-p py-2 px-4 text-xs shadow-lg">
+            <i class="fa-solid fa-map-location-dot"></i> Abrir no Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ── -->
+  <section class="py-32 bg-teal-600 relative overflow-hidden rv">
+    <div class="absolute inset-0 opacity-[.07]" style="background-image:url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");"></div>
+    <div class="absolute right-0 top-0 w-80 h-80 rounded-full bg-blush-400/20 blur-3xl"></div>
+
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+      <span class="label !text-white/60 mb-4 block">Dê o primeiro passo</span>
+      <h2 class="sec-h text-5xl lg:text-7xl text-white mb-6">
+        Pronto para<br><em class="italic">evoluir?</em>
+      </h2>
+      <p class="text-white/70 text-lg mb-10">Agende pelo WhatsApp — é rápido, fácil e sem burocracia.</p>
+      <button @click="om('sched')" class="bg-white text-teal-700 hover:bg-teal-50 px-10 py-5 rounded-full font-semibold text-base shadow-2xl hover:-translate-y-1 transition-all inline-flex items-center gap-3">
+        Agendar consulta <i class="fa-brands fa-whatsapp text-green-600 text-xl"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="bg-ink text-white/50 py-16">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="grid md:grid-cols-3 gap-10 mb-12 pb-12 border-b border-white/8">
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <img :src="cfg.logo" class="w-10 h-10 rounded-full object-cover border border-teal-800" alt="Evoluir">
+            <div>
+              <span class="font-display italic text-xl text-teal-400 block leading-none">evoluir</span>
+              <span class="text-[.5rem] uppercase tracking-widest text-white/30">Clínica Multidisciplinar</span>
+            </div>
+          </div>
+          <p class="text-sm leading-relaxed text-white/40">Cuidado humanizado em Teresópolis, integrando saúde física, mental e emocional desde a infância até a melhor idade.</p>
+        </div>
+        <div>
+          <h5 class="text-white font-semibold text-xs uppercase tracking-widest mb-5">Navegação</h5>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#sobre" class="hover:text-teal-400 transition-colors">Sobre a Clínica</a></li>
+            <li><a href="#especialidades" class="hover:text-teal-400 transition-colors">Especialidades</a></li>
+            <li><a href="#equipe" class="hover:text-teal-400 transition-colors">Nossa Equipe</a></li>
+            <li><a href="#estrutura" class="hover:text-teal-400 transition-colors">Estrutura</a></li>
+            <li><a href="#contato" class="hover:text-teal-400 transition-colors">Contato</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="text-white font-semibold text-xs uppercase tracking-widest mb-5">Contato</h5>
+          <div class="space-y-3 text-sm">
+            <p x-text="cfg.address" class="leading-relaxed"></p>
+            <p x-text="cfg.phone"></p>
+            <p class="break-all" x-text="cfg.email"></p>
+            <div class="flex gap-3 mt-4">
+              <a :href="cfg.instagram" target="_blank" class="w-9 h-9 rounded-full bg-white/5 hover:bg-teal-700 flex items-center justify-center transition-colors">
+                <i class="fa-brands fa-instagram text-sm"></i>
+              </a>
+              <a :href="`https://wa.me/${cfg.whatsappRaw}`" target="_blank" class="w-9 h-9 rounded-full bg-white/5 hover:bg-green-700 flex items-center justify-center transition-colors">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/25">
+        <p>© 2026 Clínica Multi Evoluir · Reg. 007114RJ · Todos os direitos reservados.</p>
+        <button @click="om('login')" class="flex items-center gap-1.5 hover:text-teal-400 transition-colors">
+          <i class="fa-solid fa-lock text-[.6rem]"></i> Área administrativa
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp mobile FAB -->
+  <a :href="`https://wa.me/${cfg.whatsappRaw}?text=Olá, gostaria de agendar!`" target="_blank"
+     class="fixed bottom-6 right-5 z-40 w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl transition-all hover:scale-110 sm:hidden">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+</div><!-- /pub -->
+
+
+<!-- ══════════════════════════════════════════
+     PAINEL ADMIN — MOBILE FIRST
+══════════════════════════════════════════ -->
+<div x-show="view==='adm'" x-cloak class="min-h-screen bg-slate-50 dark:bg-[#080f12] flex flex-col md:flex-row">
+
+  <!-- ── SIDEBAR DESKTOP ── -->
+  <aside class="hidden md:flex flex-col w-56 flex-shrink-0 bg-ink border-r border-teal-900/50 min-h-screen sticky top-0 h-screen">
+    <!-- Logo no topo -->
+    <div class="h-16 flex items-center px-5 border-b border-teal-900/50 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <img :src="cfg.logo" class="w-8 h-8 rounded-full object-cover border border-teal-800" alt="Evoluir">
+        <div>
+          <span class="font-display italic text-teal-400 text-base block leading-none">evoluir</span>
+          <span class="text-[.45rem] uppercase tracking-widest text-white/30">Painel Admin</span>
+        </div>
+      </div>
+    </div>
+    <!-- Nav sidebar -->
+    <nav class="flex-grow overflow-y-auto py-4 px-3 space-y-1">
+      <template x-for="(tab, key) in adminTabs" :key="key">
+        <button @click="adminTab=key"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors text-left"
+                :class="adminTab===key ? 'bg-teal-700 text-white font-semibold' : 'text-white/40 hover:bg-white/5 hover:text-white'">
+          <i class="fa-solid w-4 text-center flex-shrink-0" :class="tab.icon"></i>
+          <span x-text="tab.label"></span>
+        </button>
+      </template>
+    </nav>
+    <!-- Footer da sidebar -->
+    <div class="border-t border-white/8 py-3 px-3 space-y-1 flex-shrink-0">
+      <button @click="toggleDark()" class="w-full flex items-center justify-between text-xs px-4 py-2.5 text-white/40 hover:text-white hover:bg-white/5 rounded-xl transition-colors">
+        <span x-text="dark?'Modo Claro':'Modo Escuro'"></span>
+        <i class="fa-solid" :class="dark?'fa-sun':'fa-moon'"></i>
+      </button>
+      <button @click="logout()" class="w-full flex items-center justify-between text-xs px-4 py-2.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl transition-colors">
+        Sair <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── ÁREA PRINCIPAL (desktop: flex-grow; mobile: coluna inteira) ── -->
+  <div class="flex flex-col flex-grow min-w-0">
+
+  <!-- Header admin -->
+  <header class="h-16 flex items-center justify-between px-6 flex-shrink-0 sticky top-0 z-40 border-b
+                 bg-ink border-teal-900/50
+                 md:bg-white md:dark:bg-[#111820] md:border-slate-200 md:dark:border-teal-900/40">
+    <!-- Mobile: logo; Desktop: título da aba atual -->
+    <div class="flex items-center gap-3">
+      <!-- Logo só no mobile (sidebar esconde no desktop) -->
+      <div class="flex items-center gap-3 md:hidden">
+        <img :src="cfg.logo" class="w-8 h-8 rounded-full object-cover border border-teal-800" alt="Evoluir">
+        <span class="font-display italic text-teal-400 text-base leading-none">evoluir</span>
+      </div>
+      <!-- Título no desktop -->
+      <h1 class="hidden md:block font-semibold text-ink dark:text-white text-base" x-text="adminTabs[adminTab].label"></h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="px-2.5 py-1 bg-amber-400/15 text-amber-400 text-[.6rem] font-bold rounded-full border border-amber-400/25 hidden sm:flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 bg-amber-400 rounded-full pulse"></span> Cache Local
+      </span>
+      <button @click="view='pub'" class="text-sm px-3 py-1.5 border rounded-lg transition-colors flex items-center gap-1.5
+                                         text-white/50 hover:text-white border-white/10
+                                         md:text-ink/60 md:hover:text-ink md:dark:text-white/50 md:dark:hover:text-white md:border-slate-200 md:dark:border-teal-800/50">
+        <i class="fa-solid fa-eye text-xs"></i> <span class="hidden sm:inline">Ver site</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo scrollável -->
+  <main class="flex-grow overflow-y-auto p-5 pb-28 md:pb-10 md:px-8">
+
+    <!-- DASHBOARD -->
+    <div x-show="adminTab==='dash'">
+      <h2 class="font-display text-3xl text-ink dark:text-white italic mb-6 mt-2">Visão Geral</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white dark:bg-teal-900/20 rounded-2xl p-5 border border-teal-50 dark:border-teal-800/30 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-900/50 text-teal-600 flex items-center justify-center text-xl"><i class="fa-solid fa-stethoscope"></i></div>
+          <div><p class="text-xs text-ink/50 dark:text-white/50 mb-0.5">Especialidades</p><p class="text-3xl font-display text-ink dark:text-white" x-text="db.services.length"></p></div>
+        </div>
+        <div class="bg-white dark:bg-teal-900/20 rounded-2xl p-5 border border-teal-50 dark:border-teal-800/30 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blush-50 dark:bg-blush-900/20 text-blush-500 flex items-center justify-center text-xl"><i class="fa-solid fa-user-doctor"></i></div>
+          <div><p class="text-xs text-ink/50 dark:text-white/50 mb-0.5">Profissionais</p><p class="text-3xl font-display text-ink dark:text-white" x-text="db.professionals.length"></p></div>
+        </div>
+        <div class="bg-white dark:bg-teal-900/20 rounded-2xl p-5 border border-teal-50 dark:border-teal-800/30 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center text-xl"><i class="fa-solid fa-handshake"></i></div>
+          <div><p class="text-xs text-ink/50 dark:text-white/50 mb-0.5">Convênios</p><p class="text-3xl font-display text-ink dark:text-white" x-text="db.convenios.length"></p></div>
+        </div>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/15 border border-blue-100 dark:border-blue-800/30 rounded-2xl p-5 flex gap-4">
+        <i class="fa-solid fa-circle-info text-blue-400 text-lg mt-0.5 flex-shrink-0"></i>
+        <div>
+          <h3 class="font-semibold text-blue-900 dark:text-blue-200 text-sm mb-1">Mockup — dados em cache local</h3>
+          <p class="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">Alterações refletem imediatamente no site público e são salvas no localStorage. Pronto para integração com Supabase ou Firebase.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div x-show="adminTab==='cfg'" style="display:none">
+      <h2 class="font-display text-3xl text-ink dark:text-white italic mb-6 mt-2">Configurações</h2>
+      <div class="bg-white dark:bg-teal-900/20 rounded-2xl border border-teal-50 dark:border-teal-800/30 p-5 space-y-5 max-w-2xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">Telefone / WhatsApp</label>
+            <input type="text" x-model="cfg.phone" class="inp">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">E-mail</label>
+            <input type="email" x-model="cfg.email" class="inp">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">Endereço</label>
+            <input type="text" x-model="cfg.address" class="inp">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">Instagram (URL)</label>
+            <input type="url" x-model="cfg.instagram" class="inp">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">Horário Seg–Sex</label>
+            <input type="text" x-model="cfg.hoursWeek" class="inp" placeholder="08h às 19h">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">Horário Sábado</label>
+            <input type="text" x-model="cfg.hoursSat" class="inp" placeholder="Fechado">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-2 uppercase tracking-wide">Logo</label>
+            <div class="flex items-center gap-4">
+              <img :src="cfg.logo" class="w-16 h-16 rounded-xl object-cover border border-teal-100 dark:border-teal-800">
+              <input type="file" accept="image/*" @change="handleLogo($event)" class="text-xs text-ink/60 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-teal-600 file:text-white file:text-xs hover:file:bg-teal-700">
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-teal-50 dark:border-teal-800/40 pt-5">
+          <label class="block text-xs font-semibold text-ink/60 dark:text-white/60 mb-3 uppercase tracking-wide">Galeria (até 7 fotos)</label>
+          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+            <template x-for="(img,i) in db.gallery" :key="i">
+              <div class="relative group rounded-xl overflow-hidden h-20">
+                <img :src="img" class="w-full h-full object-cover">
+                <button @click="rmGallery(i)" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                  <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+              </div>
+            </template>
+            <label x-show="db.gallery.length<7" class="h-20 rounded-xl border-2 border-dashed border-teal-200 dark:border-teal-700 flex flex-col items-center justify-center text-teal-400 cursor-pointer hover:border-teal-500 transition-colors">
+              <i class="fa-solid fa-plus mb-1"></i>
+              <span class="text-[.6rem]">Adicionar</span>
+              <input type="file" accept="image/*" class="hidden" @change="handleGallery($event)">
+            </label>
+          </div>
+        </div>
+
+        <button @click="saveConfig()" class="btn-p w-full justify-center">Salvar Configurações <i class="fa-solid fa-check"></i></button>
+      </div>
+    </div>
+
+    <!-- ESPECIALIDADES ADMIN -->
+    <div x-show="adminTab==='srv'" style="display:none">
+      <h2 class="font-display text-3xl text-ink dark:text-white italic mb-6 mt-2">Especialidades</h2>
+
+      <div class="bg-white dark:bg-teal-900/20 rounded-2xl border border-teal-50 dark:border-teal-800/30 p-5 mb-5 max-w-2xl">
+        <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 dark:text-white/40 mb-4">Nova especialidade</p>
+        <div class="space-y-3">
+          <input type="text" x-model="nSrv.name" class="inp" placeholder="Nome (ex: Fisioterapia)">
+          <input type="text" x-model="nSrv.icon" class="inp" placeholder="Ícone FontAwesome (ex: fa-brain)">
+          <input type="text" x-model="nSrv.desc" class="inp" placeholder="Descrição curta">
+          <button @click="addSrv()" class="btn-p w-full justify-center"><i class="fa-solid fa-plus"></i> Cadastrar</button>
+        </div>
+      </div>
+
+      <div class="space-y-3 max-w-2xl">
+        <template x-for="srv in db.services" :key="srv.id">
+          <div class="bg-white dark:bg-teal-900/20 rounded-xl border border-teal-50 dark:border-teal-800/30 p-4 flex items-center gap-4 group">
+            <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-900/40 text-teal-600 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid" :class="srv.icon"></i>
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-ink dark:text-white text-sm" x-text="srv.name"></p>
+              <p class="text-xs text-ink/40 dark:text-white/40 truncate" x-text="srv.desc"></p>
+            </div>
+            <button @click="rmSrv(srv.id)" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 flex-shrink-0">
+              <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- PROFISSIONAIS ADMIN -->
+    <div x-show="adminTab==='pro'" style="display:none">
+      <h2 class="font-display text-3xl text-ink dark:text-white italic mb-6 mt-2">Equipe</h2>
+
+      <div class="bg-white dark:bg-teal-900/20 rounded-2xl border border-teal-50 dark:border-teal-800/30 p-5 mb-5 max-w-2xl">
+        <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 dark:text-white/40 mb-4">Novo profissional</p>
+        <div class="space-y-3">
+          <input type="text" x-model="nPro.name" class="inp" placeholder="Nome completo">
+          <input type="text" x-model="nPro.registry" class="inp" placeholder="Registro (ex: CREFITO 1234)">
+          <select x-model="nPro.serviceId" class="inp">
+            <option value="">Especialidade…</option>
+            <template x-for="s in db.services" :key="s.id">
+              <option :value="s.id" x-text="s.name"></option>
+            </template>
+          </select>
+          <button @click="addPro()" class="btn-p w-full justify-center"><i class="fa-solid fa-plus"></i> Cadastrar</button>
+        </div>
+      </div>
+
+      <div class="space-y-3 max-w-2xl">
+        <template x-for="pro in db.professionals" :key="pro.id">
+          <div class="bg-white dark:bg-teal-900/20 rounded-xl border border-teal-50 dark:border-teal-800/30 p-4 flex items-center gap-4 group">
+            <div class="av text-base flex-shrink-0" :style="`background:${pro.color||'#5a8a96'}`"
+                 x-text="pro.name.split(' ').map(n=>n[0]).slice(0,2).join('')"></div>
+            <div class="flex-grow min-w-0">
+              <p class="font-semibold text-ink dark:text-white text-sm" x-text="pro.name"></p>
+              <p class="text-xs text-teal-600 dark:text-teal-400" x-text="srvName(pro.serviceId)"></p>
+              <p class="text-[.65rem] text-ink/35 dark:text-white/35 font-mono" x-text="pro.registry"></p>
+            </div>
+            <button @click="rmPro(pro.id)" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 flex-shrink-0">
+              <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- CONVÊNIOS ADMIN -->
+    <div x-show="adminTab==='conv'" style="display:none">
+      <h2 class="font-display text-3xl text-ink dark:text-white italic mb-6 mt-2">Convênios</h2>
+
+      <div class="flex gap-3 mb-5 max-w-2xl">
+        <input type="text" x-model="nConv" class="inp" placeholder="Nome do convênio (ex: Unimed)" @keydown.enter="addConv()">
+        <button @click="addConv()" class="btn-p flex-shrink-0 px-4">Adicionar</button>
+      </div>
+
+      <div class="flex flex-wrap gap-3 max-w-2xl">
+        <template x-for="(c,i) in db.convenios" :key="i">
+          <div class="flex items-center gap-2 conv-pill !bg-white dark:!bg-teal-900/30">
+            <span x-text="c"></span>
+            <button @click="rmConv(i)" class="text-teal-400 hover:text-red-500 transition-colors">
+              <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── BOTTOM NAV (mobile) ── -->
+  <nav class="admin-bottom-nav md:hidden">
+    <button @click="adminTab='dash'" :class="adminTab==='dash'?'act':''">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Geral</span>
+    </button>
+    <button @click="adminTab='cfg'" :class="adminTab==='cfg'?'act':''">
+      <i class="fa-solid fa-sliders"></i>
+      <span>Config</span>
+    </button>
+    <button @click="adminTab='srv'" :class="adminTab==='srv'?'act':''">
+      <i class="fa-solid fa-stethoscope"></i>
+      <span>Espec.</span>
+    </button>
+    <button @click="adminTab='pro'" :class="adminTab==='pro'?'act':''">
+      <i class="fa-solid fa-user-doctor"></i>
+      <span>Equipe</span>
+    </button>
+    <button @click="adminTab='conv'" :class="adminTab==='conv'?'act':''">
+      <i class="fa-solid fa-handshake"></i>
+      <span>Convên.</span>
+    </button>
+    <button @click="logout()" class="!text-red-400">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Sair</span>
+    </button>
+  </nav>
+
+  </div><!-- /flex-col main area -->
+</div><!-- /adm -->
+
+
+<!-- ══════════════════════════════════════════
+     MODAL AGENDAMENTO
+══════════════════════════════════════════ -->
+<div x-show="modals.sched" x-cloak class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
+     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
+     x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0">
+  <div class="modal-bg absolute inset-0" @click="cm()"></div>
+  <div class="relative bg-white dark:bg-ink rounded-3xl shadow-2xl border border-teal-50 dark:border-teal-900/50 w-full max-w-md p-8 max-h-[95vh] overflow-y-auto"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 scale-95 translate-y-8"
+       x-transition:enter-end="opacity-100 scale-100 translate-y-0">
+
+    <button @click="cm()" class="absolute top-5 right-5 text-ink/30 hover:text-ink dark:text-white/30 dark:hover:text-white w-9 h-9 rounded-full hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center transition-colors">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="flex items-center gap-4 mb-7">
+      <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center text-xl">
+        <i class="fa-brands fa-whatsapp"></i>
+      </div>
+      <div>
+        <h3 class="font-display text-2xl font-light italic text-ink dark:text-white">Agendar Consulta</h3>
+        <p class="text-xs text-ink/40 dark:text-white/40">Direto pelo WhatsApp da clínica</p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 dark:text-white/50 mb-2">Seu nome *</label>
+        <input type="text" x-model="sched.name" class="inp" placeholder="Como devo te chamar?">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 dark:text-white/50 mb-2">Especialidade *</label>
+        <select x-model="sched.serviceId" class="inp">
+          <option value="">Selecione uma especialidade…</option>
+          <template x-for="s in db.services" :key="s.id">
+            <option :value="s.id" x-text="s.name"></option>
+          </template>
+        </select>
+      </div>
+      <div x-show="getProsForSrv(sched.serviceId).length > 0">
+        <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 dark:text-white/50 mb-2">Profissional</label>
+        <select x-model="sched.proId" class="inp">
+          <option value="">Sem preferência</option>
+          <template x-for="p in getProsForSrv(sched.serviceId)" :key="p.id">
+            <option :value="p.name" x-text="p.name"></option>
+          </template>
+        </select>
+      </div>
+    </div>
+
+    <button @click="sendWA()" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-2xl font-semibold text-base transition-colors shadow-lg flex items-center justify-center gap-3">
+      Enviar pelo WhatsApp <i class="fa-brands fa-whatsapp text-xl"></i>
+    </button>
+    <p class="text-center text-xs text-ink/30 dark:text-white/30 mt-4">Você será redirecionado para o WhatsApp</p>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     ALPINE.JS — LÓGICA
-════════════════════════════════════════════════════════════════ -->
-<script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('clinicApp', () => ({
+<!-- MODAL LOGIN -->
+<div x-show="modals.login" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
+     x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0">
+  <div class="modal-bg absolute inset-0" @click="cm()"></div>
+  <div class="relative bg-white dark:bg-ink rounded-3xl shadow-2xl border border-teal-50 dark:border-teal-900/50 w-full max-w-sm p-8"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 scale-95"
+       x-transition:enter-end="opacity-100 scale-100">
 
-        // ——— Estado da app ———
-        isLoading: true,
-        scrolled: false,
-        isDark: false,
-        fontScale: 1,
-        view: 'public',
-        adminTab: 'dashboard',
-        modals: { login: false, schedule: false },
-        lightbox: { open: false, idx: 0, img: '' },
-        loginData: { user: '', pass: '' },
-        scheduleData: { serviceId: '', proId: '', name: '' },
-        newSrv: { name: '', icon: '', desc: '' },
-        newPro: { name: '', registry: '', serviceId: '' },
-        newConvenio: '',
-        toasts: [],
+    <button @click="cm()" class="absolute top-5 right-5 text-ink/30 hover:text-ink dark:text-white/30 dark:hover:text-white w-9 h-9 rounded-full hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center transition-colors">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
 
-        // ——— Configurações ———
-        cfg: {
-            phone: '(21) 2040-1842',
-            whatsappRaw: '552120401842',
-            email: 'falecom@clinicamultievoluir.com.br',
-            address: 'R. Maj. Carvalho, 65 - Várzea, Teresópolis - RJ, 25953-460',
-            hours: 'Seg a Sex: 08h às 19h',
-            hoursWeek: '08h às 19h',
-            hoursSat: 'Fechado',
-            instagram: 'https://instagram.com/clinicamultievoluir',
-            logo: './assets/logo-evoluir.jpg',
-        },
+    <div class="flex justify-center mb-6">
+      <div class="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-teal-900/40 text-teal-600 flex items-center justify-center text-2xl">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+    </div>
+    <h3 class="font-display text-2xl text-center text-ink dark:text-white font-light italic mb-1">Área Restrita</h3>
+    <p class="text-xs text-center text-ink/40 dark:text-white/40 mb-7">Acesso exclusivo para administradores</p>
 
-        // ——— Banco de dados mock ———
-        db: {
-            services: [
-                { id: 'fisio',     name: 'Fisioterapia',             icon: 'fa-person-walking',       desc: 'Reabilitação e prevenção de lesões físicas.' },
-                { id: 'psico',     name: 'Psicologia',               icon: 'fa-brain',                 desc: 'Saúde mental, autoconhecimento e bem-estar emocional.' },
-                { id: 'fono',      name: 'Fonoaudiologia',           icon: 'fa-ear-listen',            desc: 'Comunicação, linguagem e deglutição.' },
-                { id: 'nutri',     name: 'Nutrição',                 icon: 'fa-apple-whole',           desc: 'Alimentação equilibrada para cada fase da vida.' },
-                { id: 'to',        name: 'Terapia Ocupacional',      icon: 'fa-hands-holding',         desc: 'Desenvolvimento e independência nas atividades diárias.' },
-                { id: 'music',     name: 'Musicoterapia',            icon: 'fa-music',                 desc: 'Música como ferramenta terapêutica e sensorial.' },
-                { id: 'arte',      name: 'Arteterapia',              icon: 'fa-palette',               desc: 'Arte como caminho para a expressão e o equilíbrio.' },
-                { id: 'pilates',   name: 'Pilates',                  icon: 'fa-spa',                   desc: 'Fortalecimento, postura e qualidade de vida.' },
-                { id: 'psicoped',  name: 'Psicopedagogia',           icon: 'fa-graduation-cap',        desc: 'Aprendizagem, leitura e desenvolvimento escolar.' },
-                { id: 'psicomot',  name: 'Psicomotricidade',         icon: 'fa-hands-holding-child',   desc: 'Desenvolvimento motor e cognição em crianças.' },
-                { id: 'tfuncional',name: 'Treinamento Funcional',    icon: 'fa-dumbbell',              desc: 'Condicionamento físico orientado e supervisionado.' },
-                { id: 'tfkids',    name: 'Treinamento Funcional Kids',icon: 'fa-child-reaching',        desc: 'Movimento saudável e divertido para crianças.' },
-            ],
-            professionals: [
-                { id: 1, name: 'Dra. Ana Costa',       registry: 'CREFITO 1234', serviceId: 'fisio',    color: '#5a8a96' },
-                { id: 2, name: 'Dr. João Silva',        registry: 'CRP 5678',    serviceId: 'psico',    color: '#7c6fa0' },
-                { id: 3, name: 'Dra. Maria Fernanda',   registry: 'CRN 9101',    serviceId: 'nutri',    color: '#6aab7a' },
-                { id: 4, name: 'Dr. Carlos Mendes',     registry: 'CRFA 1121',   serviceId: 'fono',     color: '#c77a5a' },
-                { id: 5, name: 'Dra. Luisa Ramos',      registry: 'TO 3344',     serviceId: 'to',       color: '#b08050' },
-                { id: 6, name: 'Ms. Paula Torres',      registry: 'CONFEF 7890', serviceId: 'pilates',  color: '#5a96a0' },
-            ],
-            convenios: ['Unimed', 'Amil', 'Bradesco Saúde', 'SulAmérica', 'Golden Cross', 'Particular'],
-            gallery: [
-                './assets/recepcao.jpg',
-                './assets/infantil.jpg',
-                './assets/pilates.jpg',
-                './assets/atendimento.jpg',
-            ],
-        },
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 dark:text-white/50 mb-2">Usuário</label>
+        <input type="text" x-model="loginD.user" class="inp" placeholder="admin" @keydown.enter="doLogin()">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 dark:text-white/50 mb-2">Senha</label>
+        <input type="password" x-model="loginD.pass" class="inp" placeholder="••••••" @keydown.enter="doLogin()">
+      </div>
+    </div>
 
-        // ——— Tabs admin ———
-        adminTabs: {
-            dashboard:     { label: 'Visão Geral',      icon: 'fa-chart-pie' },
-            config:        { label: 'Configurações',    icon: 'fa-sliders' },
-            servicos:      { label: 'Especialidades',   icon: 'fa-stethoscope' },
-            profissionais: { label: 'Equipe',           icon: 'fa-user-doctor' },
-            convenios:     { label: 'Convênios',        icon: 'fa-handshake' },
-        },
+    <button @click="doLogin()" class="btn-p w-full justify-center mt-6 py-4">Entrar no Painel</button>
+    <p class="text-center text-xs text-ink/30 dark:text-white/30 mt-3">Demo: admin / admin</p>
+  </div>
+</div>
 
-        // ——— Init ———
-        init() {
-            this.isDark = localStorage.getItem('ev2_theme') === 'dark';
-            this.fontScale = parseFloat(localStorage.getItem('ev2_font')) || 1;
-            const saved = localStorage.getItem('ev2_data');
-            if (saved) {
-                try {
-                    const p = JSON.parse(saved);
-                    this.cfg = { ...this.cfg, ...(p.cfg || {}) };
-                    this.db  = { ...this.db,  ...(p.db  || {}) };
-                } catch(e) {}
-            }
-            window.addEventListener('scroll', () => { this.scrolled = window.scrollY > 20; });
-            setTimeout(() => {
-                this.isLoading = false;
-                this.$nextTick(() => this.initReveal());
-            }, 900);
-        },
+<!-- LIGHTBOX -->
+<div x-show="lb.open" x-cloak class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 p-4"
+     x-transition:enter="transition duration-200" x-transition:enter-start="opacity-0"
+     x-transition:leave="transition duration-150" x-transition:leave-end="opacity-0"
+     @click.self="lb.open=false" @keydown.escape.window="lb.open=false">
+  <button @click="lb.open=false" class="absolute top-5 right-5 text-white/50 hover:text-white w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-colors">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+  <button @click="lbPrev()" class="absolute left-4 text-white/50 hover:text-white w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-colors">
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+  <img :src="lb.img" class="max-h-[85vh] max-w-[90vw] object-contain rounded-2xl">
+  <button @click="lbNext()" class="absolute right-4 text-white/50 hover:text-white w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-colors">
+    <i class="fa-solid fa-chevron-right"></i>
+  </button>
+  <div class="absolute bottom-5 flex gap-2">
+    <template x-for="(_,i) in db.gallery" :key="i">
+      <button @click="openLb(i)" class="w-1.5 h-1.5 rounded-full transition-colors" :class="i===lb.idx?'bg-white':'bg-white/25'"></button>
+    </template>
+  </div>
+</div>
 
-        // ——— Theme / Font ———
-        toggleDark() {
-            this.isDark = !this.isDark;
-            localStorage.setItem('ev2_theme', this.isDark ? 'dark' : 'light');
-            this.toast(this.isDark ? 'Modo escuro ativado' : 'Modo claro ativado', 'info');
-        },
-        cycleFont() {
-            this.fontScale = this.fontScale >= 1.25 ? 1 : this.fontScale + 0.125;
-            localStorage.setItem('ev2_font', this.fontScale);
-            this.toast(`Fonte: ${Math.round(this.fontScale*100)}%`, 'info');
-        },
-
-        // ——— Persist ———
-        save() {
-            try { localStorage.setItem('ev2_data', JSON.stringify({ cfg: this.cfg, db: this.db })); } catch(e) {}
-        },
-
-        // ——— Reveal on scroll ———
-        initReveal() {
-            const obs = new IntersectionObserver((entries) => {
-                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); obs.unobserve(e.target); } });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el => obs.observe(el));
-        },
-
-        // ——— Toast ———
-        toast(msg, type = 'success') {
-            const id = Date.now();
-            this.toasts.push({ id, msg, type });
-            setTimeout(() => { this.toasts = this.toasts.filter(t => t.id !== id); }, 3500);
-        },
-
-        // ——— Modals ———
-        openModal(type, extra = null) {
-            this.modals[type] = true;
-            if (type === 'schedule') this.scheduleData = { serviceId: extra || '', proId: '', name: '' };
-        },
-        closeModals() {
-            this.modals.login = false;
-            this.modals.schedule = false;
-            this.loginData = { user: '', pass: '' };
-        },
-
-        // ——— Lightbox ———
-        openLightbox(idx) {
-            this.lightbox = { open: true, idx, img: this.db.gallery[idx] };
-        },
-        galleryPrev() {
-            const n = this.db.gallery.length;
-            this.lightbox.idx = (this.lightbox.idx - 1 + n) % n;
-            this.lightbox.img = this.db.gallery[this.lightbox.idx];
-        },
-        galleryNext() {
-            const n = this.db.gallery.length;
-            this.lightbox.idx = (this.lightbox.idx + 1) % n;
-            this.lightbox.img = this.db.gallery[this.lightbox.idx];
-        },
-
-        // ——— Helpers ———
-        getServiceName(id) {
-            const s = this.db.services.find(s => s.id === id);
-            return s ? s.name : 'Especialista';
-        },
-        getProsForService() {
-            if (!this.scheduleData.serviceId) return [];
-            return this.db.professionals.filter(p => p.serviceId === this.scheduleData.serviceId);
-        },
-
-        // ——— WhatsApp ———
-        sendWhatsApp() {
-            if (!this.scheduleData.serviceId || !this.scheduleData.name.trim()) {
-                this.toast('Preencha a especialidade e seu nome.', 'error');
-                return;
-            }
-            const srvName = this.getServiceName(this.scheduleData.serviceId);
-            let text = `Olá, Clínica Evoluir! Me chamo *${this.scheduleData.name.trim()}* e gostaria de agendar para *${srvName}*.`;
-            if (this.scheduleData.proId) text += ` Tenho preferência por atendimento com *${this.scheduleData.proId}*.`;
-            window.open(`https://wa.me/${this.cfg.whatsappRaw}?text=${encodeURIComponent(text)}`, '_blank');
-            this.closeModals();
-        },
-
-        // ——— Login ———
-        doLogin() {
-            if (this.loginData.user === 'admin' && this.loginData.pass === 'admin') {
-                this.closeModals();
-                this.view = 'admin';
-                this.toast('Bem-vindo ao Painel Administrativo');
-            } else {
-                this.toast('Credenciais incorretas. Use: admin / admin', 'error');
-            }
-        },
-        logout() {
-            this.view = 'public';
-            this.adminTab = 'dashboard';
-            this.toast('Sessão encerrada', 'info');
-            this.$nextTick(() => this.initReveal());
-        },
-
-        // ——— Config ———
-        saveConfig() {
-            this.cfg.whatsappRaw = this.cfg.phone.replace(/\D/g, '');
-            this.cfg.hours = `Seg a Sex: ${this.cfg.hoursWeek || 'Fechado'}` +
-                             (this.cfg.hoursSat && this.cfg.hoursSat.toLowerCase() !== 'fechado' ? ` | Sáb: ${this.cfg.hoursSat}` : '');
-            this.save();
-            this.toast('Configurações salvas!');
-        },
-        handleLogo(e) {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const r = new FileReader();
-            r.onload = () => { this.cfg.logo = r.result; this.save(); this.toast('Logo atualizada'); };
-            r.readAsDataURL(file);
-        },
-        handleGallery(e) {
-            const file = e.target.files?.[0];
-            if (!file || this.db.gallery.length >= 7) return;
-            const r = new FileReader();
-            r.onload = () => { this.db.gallery.push(r.result); this.save(); this.toast('Foto adicionada'); };
-            r.readAsDataURL(file);
-            e.target.value = '';
-        },
-        removeGallery(i) { this.db.gallery.splice(i, 1); this.save(); this.toast('Foto removida'); },
-
-        // ——— Serviços ———
-        addService() {
-            if (!this.newSrv.name) return;
-            const id = this.newSrv.name.toLowerCase().replace(/\s/g,'').substring(0,8) + Date.now().toString().slice(-4);
-            this.db.services.push({ id, name: this.newSrv.name, icon: this.newSrv.icon || 'fa-stethoscope', desc: this.newSrv.desc });
-            this.newSrv = { name: '', icon: '', desc: '' };
-            this.save(); this.toast('Especialidade cadastrada');
-        },
-        removeService(id) { this.db.services = this.db.services.filter(s => s.id !== id); this.save(); this.toast('Especialidade removida'); },
-
-        // ——— Profissionais ———
-        addProfessional() {
-            if (!this.newPro.name || !this.newPro.serviceId) return;
-            const colors = ['#5a8a96','#7c6fa0','#6aab7a','#c77a5a','#b08050','#5a96a0','#a07050'];
-            this.db.professionals.push({ id: Date.now(), name: this.newPro.name, registry: this.newPro.registry, serviceId: this.newPro.serviceId, color: colors[this.db.professionals.length % colors.length] });
-            this.newPro = { name: '', registry: '', serviceId: '' };
-            this.save(); this.toast('Profissional cadastrado');
-        },
-        removeProfessional(id) { this.db.professionals = this.db.professionals.filter(p => p.id !== id); this.save(); this.toast('Profissional removido'); },
-
-        // ——— Convênios ———
-        addConvenio() {
-            if (!this.newConvenio.trim()) return;
-            this.db.convenios.push(this.newConvenio.trim());
-            this.newConvenio = ''; this.save(); this.toast('Convênio adicionado');
-        },
-        removeConvenio(i) { this.db.convenios.splice(i, 1); this.save(); this.toast('Convênio removido'); },
-
-    }));
-});
-</script>
+<script src="src/js/app.js"></script>
 </body>
 </html>
