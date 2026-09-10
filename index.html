@@ -79,7 +79,7 @@
       </a>
 
       <!-- Nav desktop -->
-      <nav class="hidden md:flex items-center gap-8 text-sm text-ink/60 dark:text-white/60">
+      <nav id="menu-top" class="hidden md:flex items-center gap-8 text-sm text-ink/60 dark:text-white/60">
         <a href="#sobre" class="hover:text-teal-600 transition-colors">Sobre</a>
         <a href="#especialidades" class="hover:text-teal-600 transition-colors">Especialidades</a>
         <a href="#equipe" class="hover:text-teal-600 transition-colors">Equipe</a>
@@ -100,7 +100,7 @@
         <button @click="om('login')" class="w-8 h-8 rounded-full flex items-center justify-center text-ink/30 dark:text-white/30 hover:text-teal-600 transition-colors">
           <i class="fa-solid fa-lock text-xs"></i>
         </button>
-        <button @click="om('sched')" class="btn-p hidden sm:inline-flex text-sm py-2.5 px-5">
+        <button id="btn-agendar-top" @click="om('sched')" class="btn-p hidden sm:inline-flex text-sm py-2.5 px-5">
           Agendar <i class="fa-brands fa-whatsapp"></i>
         </button>
       </div>

@@ -249,5 +249,14 @@ html,body{font-family:'DM Sans',sans-serif;background:#faf8f5;color:#1a2a2e;over
 button:focus:not(:focus-visible){outline:none}
 
 @media(max-width:768px){
-  .hero-title{font-size:clamp(3.5rem,18vw,6rem)}
+  .hero-title{font-size:clamp(3.5rem,18vw,6rem)};
+}
+
+@media(max-width:1024px){
+  #btn-agendar-top{
+    display: none;
+  } 
+  #menu-top{
+    display: none;
+  }
 }
