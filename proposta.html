@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta Comercial — Clínica Evoluir</title>
+    
+    <!-- Dependências do Projeto Modelo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Configuração Tailwind (herdada de tailwind.js) -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Cormorant Garamond"', 'serif'],
+                        body: ['"DM Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        teal: { 50: '#f0f6f7', 100: '#dceef1', 200: '#bddde3', 300: '#8fc4ce', 400: '#6aacba', 500: '#5a8a96', 600: '#4a717c', 700: '#3d5d67', 800: '#344e57', 900: '#1e3038' },
+                        blush: { 50: '#fef8f5', 100: '#fdeee6', 200: '#fad9c8', 300: '#f6bda1', 400: '#f1a38b', 500: '#e8825f', 600: '#d0624a', 700: '#af4e3b' },
+                        ink: '#1a2a2e',
+                        paper: '#faf8f5',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Estilos globais (herdados de style.css) -->
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #faf8f5; color: #1a2a2e; overflow-x: hidden; }
+        
+        /* Reveal Animations */
+        .rv { opacity: 0; transform: translateY(32px); transition: opacity .75s cubic-bezier(.4,0,.2,1), transform .75s cubic-bezier(.4,0,.2,1); }
+        .rv.on { opacity: 1; transform: none; }
+        .rv-l { opacity: 0; transform: translateX(-32px); transition: opacity .75s cubic-bezier(.4,0,.2,1), transform .75s cubic-bezier(.4,0,.2,1); }
+        .rv-l.on { opacity: 1; transform: none; }
+        
+        /* Typography */
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 8vw, 6rem); line-height: .92; font-weight: 300; letter-spacing: -.02em; color: #1a2a2e; }
+        .hero-title em { font-style: italic; color: #5a8a96; }
+        .sec-h { font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.1; }
+        .label { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #f1a38b; }
+        
+        /* Table Styles */
+        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        .comparison-table th, .comparison-table td { padding: 1rem; border-bottom: 1px solid rgba(90, 138, 150, 0.18); text-align: center; }
+        .comparison-table th { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: #5a8a96; font-weight: 600; }
+        .comparison-table td:first-child { text-align: left; font-weight: 500; color: #1a2a2e; }
+        
+        /* Buttons */
+        .btn-p { display: inline-flex; align-items: center; gap: .6rem; background: #5a8a96; color: #fff; padding: .85rem 2rem; border-radius: 100px; font-weight: 600; letter-spacing: .03em; transition: background .2s, transform .2s, box-shadow .2s; box-shadow: 0 4px 20px rgba(90,138,150,.3); border: none; cursor: pointer; }
+        .btn-p:hover { background: #4a717c; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(90,138,150,.35); }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- ── CAPA / HERO ── -->
+    <header class="relative min-h-[85vh] flex flex-col justify-center items-center text-center px-6 pt-20 bg-paper">
+        <div class="absolute inset-0 opacity-[.03]" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%235a8a96\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        
+        <div class="relative z-10 max-w-4xl mx-auto rv">
+            <span class="label mb-6 block">Proposta Comercial</span>
+            <h1 class="hero-title mb-6">
+                Clínica <br><em>Evoluir</em>
+            </h1>
+            <p class="text-xl text-ink/70 font-light mb-8 max-w-2xl mx-auto">Site institucional, presença digital e gestão de conteúdo.</p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mt-12 text-sm text-ink/50 border-t border-teal-100/50 pt-8">
+                <p><strong>Clínica Multidisciplinar</strong> · Teresópolis · RJ</p>
+                <div class="hidden md:block w-1.5 h-1.5 rounded-full bg-teal-200"></div>
+                <p>Preparado por: <strong>pense.ead</strong></p>
+                <div class="hidden md:block w-1.5 h-1.5 rounded-full bg-teal-200"></div>
+                <p>Setembro de 2026 · Validade: 15 dias</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── 01. O DESAFIO E 02. A SOLUÇÃO ── -->
+    <section class="py-24 bg-white">
+        <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-16">
+            <div class="rv-l">
+                <span class="label">01. O desafio</span>
+                <h2 class="sec-h text-4xl text-ink mt-3 mb-6">Mais do que informações, <em class="italic text-teal-600">confiança.</em></h2>
+                <p class="text-ink/70 leading-relaxed mb-4">A Clínica Evoluir reúne diferentes especialidades, profissionais e possibilidades de atendimento em um único espaço.</p>
+                <p class="text-ink/70 leading-relaxed">Para uma clínica multidisciplinar, o site precisa fazer mais do que apresentar informações: ele deve transmitir <strong>confiança, acolhimento e profissionalismo</strong>, facilitar o entendimento dos serviços oferecidos e conduzir o visitante até o agendamento.</p>
+            </div>
+            <div class="rv">
+                <span class="label">02. A solução</span>
+                <h2 class="sec-h text-4xl text-ink mt-3 mb-6">Um ponto central de <em class="italic text-teal-600">contato.</em></h2>
+                <p class="text-ink/70 leading-relaxed mb-4">Propomos a criação de um site institucional moderno, responsivo e desenvolvido especialmente para a Clínica Evoluir.</p>
+                <p class="text-ink/70 leading-relaxed">O projeto será estruturado para apresentar a história, equipe, convênios e estrutura, funcionando perfeitamente em <strong>celulares, tablets e computadores</strong>, com navegação simples e foco na experiência do paciente.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 03. PRESENÇA DIGITAL ── -->
+    <section class="py-24 bg-teal-900 text-white relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 rv">
+                <span class="label opacity-80">03. O objetivo</span>
+                <h2 class="sec-h text-5xl mt-3">Uma presença digital que <em class="italic text-teal-300">transmite confiança.</em></h2>
+                <p class="text-teal-100/70 mt-4">A primeira impressão de uma clínica começa antes mesmo da primeira consulta.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 rv">
+                <div class="bg-white/5 border border-white/10 p-8 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-blush-500/20 text-blush-400 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-heart"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Acolhimento &amp; Credibilidade</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">Comunicação visual humanizada e uma presença digital própria, alinhada à identidade da clínica.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 p-8 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-user-doctor"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Profissionalismo</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">Informações organizadas e apresentação clara dos serviços, especialidades e profissionais registrados.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 p-8 rounded-2xl">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/20 text-green-400 flex items-center justify-center text-xl mb-6"><i class="fa-brands fa-whatsapp"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Facilidade &amp; Conversão</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">O paciente encontra a informação rapidamente e é conduzido estrategicamente ao agendamento via WhatsApp.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 04 & 05. ESTRUTURA E RECURSOS ── -->
+    <section class="py-24 bg-paper">
+        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20">
+            <div class="rv-l">
+                <span class="label">04. Estrutura do Site</span>
+                <h2 class="sec-h text-4xl text-ink mt-3 mb-8">Arquitetura de <em class="italic text-teal-600">informação.</em></h2>
+                <ul class="space-y-4 text-ink/70">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-teal-500 mt-1"></i> <div><strong>Início &amp; Sobre:</strong> Apresentação, história e propósito.</div></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-teal-500 mt-1"></i> <div><strong>Especialidades:</strong> Áreas de atendimento detalhadas.</div></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-teal-500 mt-1"></i> <div><strong>Nossa Equipe:</strong> Profissionais e registros.</div></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-teal-500 mt-1"></i> <div><strong>Convênios &amp; Estrutura:</strong> Planos aceitos e galeria de fotos.</div></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-teal-500 mt-1"></i> <div><strong>Contato &amp; Agendamento:</strong> Fluxo simplificado direto para o WhatsApp da clínica.</div></li>
+                </ul>
+            </div>
+            
+            <div class="rv bg-white p-10 rounded-3xl border border-teal-50 shadow-lg">
+                <span class="label">05. Recursos Incluídos</span>
+                <h2 class="sec-h text-4xl text-ink mt-3 mb-8">O que está <em class="italic text-teal-600">garantido.</em></h2>
+                <div class="grid grid-cols-2 gap-y-4 gap-x-6 text-sm text-ink/70">
+                    <p><i class="fa-solid fa-mobile-screen text-teal-400 mr-2"></i> Design responsivo</p>
+                    <p><i class="fa-brands fa-whatsapp text-teal-400 mr-2"></i> Integração WhatsApp</p>
+                    <p><i class="fa-solid fa-palette text-teal-400 mr-2"></i> Identidade visual aplicada</p>
+                    <p><i class="fa-brands fa-instagram text-teal-400 mr-2"></i> Integração Instagram</p>
+                    <p><i class="fa-solid fa-images text-teal-400 mr-2"></i> Galeria de imagens</p>
+                    <p><i class="fa-solid fa-bolt text-teal-400 mr-2"></i> Otimização de desempenho</p>
+                    <p><i class="fa-solid fa-map-location-dot text-teal-400 mr-2"></i> Google Maps integrado</p>
+                    <p><i class="fa-solid fa-lock text-teal-400 mr-2"></i> HTTPS/SSL de segurança</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 06. DUAS POSSIBILIDADES (PRICING CARDS) ── -->
+    <section class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 rv">
+                <span class="label">06. e 10. Possibilidades de Investimento</span>
+                <h2 class="sec-h text-5xl text-ink mt-3 mb-4">Duas opções para a <em class="italic text-teal-600">Evoluir.</em></h2>
+                <p class="text-ink/60 max-w-2xl mx-auto">Para atender diferentes necessidades e investimentos, elaboramos duas propostas tecnológicas.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 rv">
+                <!-- Opção 01 -->
+                <div class="border border-teal-100 rounded-3xl p-10 bg-paper hover:border-teal-300 transition-colors flex flex-col">
+                    <h3 class="font-display text-3xl font-semibold text-teal-700 mb-2">Opção 01: LP Institucional</h3>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-blush-500 mb-6">Simples, elegante e objetiva</p>
+                    <p class="text-ink/70 mb-8 flex-grow">Uma Landing Page desenvolvida para apresentar a clínica e direcionar pacientes para o agendamento. Todas as informações ficam estruturadas diretamente no código do site. Ideal para não realizar alterações frequentes.</p>
+                    
+                    <div class="mb-8 pb-8 border-b border-teal-100/60">
+                        <p class="text-4xl font-display text-ink mb-1">R$ 1.500,00</p>
+                        <p class="text-xs text-ink/50 uppercase tracking-widest">À vista ou em 3x de R$ 500,00 <br>(primeira parcela à vista)</p>
+                    </div>
+
+                    <ul class="space-y-3 text-sm text-ink/70 mb-8">
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-500 mt-0.5"></i> Desenvolvimento completo da LP</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-500 mt-0.5"></i> Layout personalizado &amp; responsivo</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-500 mt-0.5"></i> Estruturação de todo o conteúdo</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-500 mt-0.5"></i> Publicação e configuração técnica</li>
+                    </ul>
+                </div>
+
+                <!-- Opção 02 -->
+                <div class="border-2 border-teal-500 rounded-3xl p-10 bg-teal-900 text-white relative flex flex-col shadow-2xl transform md:-translate-y-4">
+                    <div class="absolute top-0 right-10 transform -translate-y-1/2 bg-blush-500 text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">Recomendado</div>
+                    
+                    <h3 class="font-display text-3xl font-semibold text-teal-100 mb-2">Opção 02: Site com Gestão</h3>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-blush-400 mb-6">O site evolui junto com a clínica</p>
+                    <p class="text-white/70 mb-8 flex-grow">Inclui todos os recursos da opção anterior, mas conta com uma <strong>estrutura administrativa integrada (Painel)</strong> e banco de dados, permitindo que as informações sejam atualizadas pela própria equipe da clínica.</p>
+                    
+                    <div class="mb-8 pb-8 border-b border-white/10">
+                        <p class="text-4xl font-display text-white mb-1">R$ 2.500,00</p>
+                        <p class="text-xs text-white/50 uppercase tracking-widest">À vista ou em 4x de R$ 625,00 <br>(primeira parcela à vista)</p>
+                    </div>
+
+                    <ul class="space-y-3 text-sm text-white/70 mb-8">
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-300 mt-0.5"></i> Tudo da LP Institucional</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-300 mt-0.5"></i> <strong>Painel administrativo (Login)</strong></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-300 mt-0.5"></i> Gestão de Profissionais e Especialidades</li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-teal-300 mt-0.5"></i> Edição de convênios, horários e galeria</li>
+                    </ul>
+                </div>                
+            </div>            
+        </div>
+    </section>
+
+    <!-- ── 07, 08 & 09. ADMINISTRAÇÃO E COMPARATIVO ── -->
+    <section class="py-24 bg-paper">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16 rv">
+                <span class="label">07 e 08. O que muda na prática?</span>
+                <h2 class="sec-h text-4xl text-ink mt-3 mb-6">A liberdade do <em class="italic text-teal-600">Painel Administrativo.</em></h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-20 rv">
+                <div class="bg-white p-8 rounded-2xl border border-teal-50">
+                    <h4 class="text-sm font-bold text-ink/50 uppercase tracking-widest mb-4">Sem painel (Opção 01)</h4>
+                    <p class="text-ink/80 text-sm">Deseja alterar um profissional?</p>
+                    <p class="font-semibold text-blush-600 mt-2">Solicita alteração → alteração técnica externa → publicação.</p>
+                </div>
+                <div class="bg-teal-50 p-8 rounded-2xl border border-teal-100">
+                    <h4 class="text-sm font-bold text-teal-700 uppercase tracking-widest mb-4">Com painel (Opção 02)</h4>
+                    <p class="text-teal-900/80 text-sm">Deseja alterar um profissional?</p>
+                    <p class="font-semibold text-teal-700 mt-2">Acessa o painel → realiza a alteração → salva instantaneamente.</p>
+                </div>
+            </div>
+
+            <div class="rv">
+                <span class="label">09. Comparativo de Recursos</span>
+                <div class="overflow-x-auto mt-6 bg-white rounded-3xl shadow-sm border border-teal-50 p-6">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Recurso</th>
+                                <th>LP Institucional</th>
+                                <th>Site com Gestão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Site responsivo &amp; Design personalizado</td><td><i class="fa-solid fa-check text-teal-500"></i></td><td><i class="fa-solid fa-check text-teal-500"></i></td></tr>
+                            <tr><td>Especialidades, Profissionais &amp; Convênios</td><td><i class="fa-solid fa-check text-teal-500"></i></td><td><i class="fa-solid fa-check text-teal-500"></i></td></tr>
+                            <tr><td>WhatsApp, Maps &amp; Redes Sociais</td><td><i class="fa-solid fa-check text-teal-500"></i></td><td><i class="fa-solid fa-check text-teal-500"></i></td></tr>
+                            <tr class="bg-teal-50/50"><td class="font-semibold !text-teal-800">Painel administrativo &amp; Banco de dados</td><td class="text-ink/30">—</td><td><i class="fa-solid fa-check text-teal-600"></i></td></tr>
+                            <tr class="bg-teal-50/50"><td class="font-semibold !text-teal-800">Alteração de dados pela própria clínica</td><td class="text-ink/30">—</td><td><i class="fa-solid fa-check text-teal-600"></i></td></tr>
+                            <tr class="bg-teal-50/50"><td class="font-semibold !text-teal-800">Cadastro de profissionais, serviços e convênios</td><td class="text-ink/30">—</td><td><i class="fa-solid fa-check text-teal-600"></i></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 11 & 12. GESTÃO E INFRAESTRUTURA ── -->
+    <section class="py-24 bg-white">
+        <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-16">
+            <div class="rv-l">
+                <span class="label">11. Manutenção contínua</span>
+                <h2 class="sec-h text-4xl text-ink mt-3 mb-6">Gestão Digital Mensal</h2>
+                <p class="text-4xl font-display text-teal-600 mb-6">R$ 250,00<span class="text-sm text-ink/50 font-body"> /mês</span></p>
+                <p class="text-ink/70 text-sm leading-relaxed mb-6">Plano opcional para garantir a estabilidade tecnológica e atualizações de rotina após o desenvolvimento inicial.</p>
+                <ul class="space-y-2 text-sm text-ink/70">
+                    <li><i class="fa-solid fa-angle-right text-blush-400 mr-2"></i> Hospedagem profissional gerenciada</li>
+                    <li><i class="fa-solid fa-angle-right text-blush-400 mr-2"></i> Administração técnica e renovação do domínio</li>
+                    <li><i class="fa-solid fa-angle-right text-blush-400 mr-2"></i> Rotinas de backup e monitoramento de segurança</li>
+                    <li><i class="fa-solid fa-angle-right text-blush-400 mr-2"></i> Até 2 horas mensais de alterações pontuais</li>
+                    <li><i class="fa-solid fa-angle-right text-blush-400 mr-2"></i> Suporte técnico especializado</li>
+                </ul>
+            </div>
+            
+            <div class="rv-r">
+                <span class="label">12, 13 e 14. Informações Operacionais</span>
+                
+                <h3 class="text-lg font-semibold text-ink mt-6 mb-2">Prazo de Desenvolvimento</h3>
+                <p class="text-ink/70 text-sm mb-6"><strong>Previsão de 3 a 4 semanas.</strong> Envolve briefing inicial, desenvolvimento da interface, integrações e validação final (com treinamento caso a Opção 02 seja escolhida).</p>
+                
+                <h3 class="text-lg font-semibold text-ink mb-2">Infraestrutura</h3>
+                <p class="text-ink/70 text-sm mb-6">Custos de hospedagem, HTTPS e banco de dados podem ser incluídos no plano mensal de Gestão Digital acima.</p>
+
+                <h3 class="text-lg font-semibold text-ink mb-2">Fora do Escopo</h3>
+                <p class="text-ink/70 text-sm">A proposta não contempla: produção de textos, fotos, vídeos, gestão de tráfego, sistema de prontuário, pagamentos online ou aplicativo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── 15 & 16. CONCLUSÃO E PRÓXIMOS PASSOS ── -->
+    <section class="py-24 bg-teal-900 text-white text-center">
+        <div class="max-w-4xl mx-auto px-6 rv">
+            <span class="label !text-blush-300">16. Uma plataforma preparada para crescer</span>
+            <h2 class="sec-h text-5xl lg:text-6xl mt-4 mb-8">Pronto para <em class="italic text-teal-300">evoluir?</em></h2>
+            
+            <p class="text-white/70 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+                A proposta não é apenas colocar a Clínica Evoluir na internet. É criar uma presença digital que acompanhe seu crescimento, oferecendo tecnologia à altura do cuidado oferecido pela clínica.
+            </p>
+            
+            <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-left max-w-xl mx-auto">
+                <h4 class="text-lg font-semibold text-teal-200 mb-4 text-center">Próximos Passos</h4>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-white/80">
+                    <li>Definição da modalidade escolhida (LP ou Site com Gestão).</li>
+                    <li>Formalização da contratação e pagamento inicial.</li>
+                    <li>Reunião de briefing e recebimento de materiais.</li>
+                    <li>Início do desenvolvimento pela pense.ead.</li>
+                </ol>
+            </div>
+            
+            <p class="mt-12 text-teal-300 font-display italic text-2xl">"Cuidar, evoluir, transformar."</p>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="bg-ink text-center py-8 border-t border-white/10">
+        <p class="text-white/40 text-xs uppercase tracking-widest">pense.ead © Setembro de 2026 — Proposta válida por 15 dias.</p>
+    </footer>
+
+    <!-- ── SCRIPT DE ANIMAÇÃO ── -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('on');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.rv, .rv-l, .rv-r').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
